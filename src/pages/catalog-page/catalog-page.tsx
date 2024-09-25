@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
-import Footer from '../../components/footer/footer';
-import Header from '../../components/header/header';
+
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { fetchCamerasAction } from '../../store/slices/cameras-slice';
+
+import Footer from '../../components/footer/footer';
+import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import CameraList from '../../components/cameras-components/cameras-list';
 

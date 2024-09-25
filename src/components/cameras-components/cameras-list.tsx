@@ -1,5 +1,6 @@
-import { Cameras } from '../../types/cameras-types/cameras-types';
 import CameraCard from './camera-card';
+
+import { Cameras } from '../../types/cameras-types/cameras-types';
 
 type CamerasListProps = {
   cameras: Cameras;
