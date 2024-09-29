@@ -8,4 +8,14 @@ const standardizePhoneNumber = (phone: string) => {
   return `+${digits}`;
 };
 
-export { formattedPrice, standardizePhoneNumber };
+const splitDescription = (description: string) => {
+  const sentences = description.split('. ').filter(Boolean);
+  const firstSentence =
+    sentences.slice(0, 1).join('.') + (sentences.length > 1 ? '.' : '');
+  const remainingDescription =
+    sentences.slice(1).join('. ') + (sentences.length > 1 ? '.' : '');
+
+  return { firstSentence, remainingDescription };
+};
+
+export { formattedPrice, standardizePhoneNumber, splitDescription };

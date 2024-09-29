@@ -5,6 +5,8 @@ import Rating from '../rating/rating';
 import ContactMePopup from '../popups/contact-me-popup';
 
 import { formattedPrice } from '../../utils';
+import { generatePath, Link } from 'react-router-dom';
+import { AppRoute } from '../../const';
 
 type CameraCardProps = {
   camera: Camera;
@@ -72,8 +74,9 @@ function CameraCard({camera}: CameraCardProps): JSX.Element {
         >
           Купить
         </button>
-        <a className="btn btn--transparent" href="#">Подробнее
-        </a>
+        <Link className="btn btn--transparent" to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
+        Подробнее
+        </Link>
       </div>
       {isOpen && <ContactMePopup content={camera} onClose={togglePopup} />}
     </div>

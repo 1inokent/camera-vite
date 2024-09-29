@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.not-found {
+  text-align: center;
+  padding: 20px;
+}
+
+.not-found__title {
+  font-size: 2rem;
+  color: #333;
+}
+
+.not-found__link {
+  color: blue;
+  text-decoration: underline;
+  font-size: 1rem;
+}
+
+.not-found__link:hover {
+  text-decoration: none;
+}

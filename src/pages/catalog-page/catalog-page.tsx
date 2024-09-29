@@ -7,13 +7,37 @@ import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import CameraList from '../../components/cameras-components/cameras-list';
+import { setError } from '../../store/slices/error-slice';
 
 function CatalogPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const { cameras, error, isLoading } = useAppSelector((state) => state.cameras);
+  const errorMessage = useAppSelector((state) => state.error.message);
 
   useEffect(() => {
-    dispatch(fetchCamerasAction());
+    const abortController = new AbortController();
+    let isMounted = true;
+    const fetchData = async () => {
+      try {
+        if (isMounted) {
+          await dispatch(fetchCamerasAction({ signal: abortController.signal }));
+        }
+      } catch (err) {
+        if (isMounted) {
+          const errMessage = err instanceof Error ? err.message : 'Ошибка загрузки камер';
+
+          dispatch(setError(errMessage));
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
+
   }, [dispatch]);
 
   if (isLoading) {
@@ -21,7 +45,7 @@ function CatalogPage(): JSX.Element {
   }
 
   if (error) {
-    return <h1>error</h1>;
+    <p>{error}</p>;
   }
 
   return (
@@ -60,7 +84,8 @@ function CatalogPage(): JSX.Element {
                     </svg>
                   </a>
                 </li>
-                <li className="breadcrumbs__item"><span className="breadcrumbs__link breadcrumbs__link--active">Каталог</span>
+                <li className="breadcrumbs__item">
+                  <span className="breadcrumbs__link breadcrumbs__link--active">Каталог</span>
                 </li>
               </ul>
             </div>
@@ -68,6 +93,9 @@ function CatalogPage(): JSX.Element {
 
           <section className="catalog">
             <div className="container">
+
+              {errorMessage && <p>{errorMessage}</p>}
+
               <h1 className="title title--h2">Каталог фото - и видеотехники</h1>
               <div className="page-content__columns">
                 <div className="catalog__aside">
