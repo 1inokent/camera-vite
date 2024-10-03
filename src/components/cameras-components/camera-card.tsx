@@ -1,12 +1,24 @@
+import { useState } from 'react';
 import { Camera } from '../../types/cameras-types/cameras-types';
-import { formattedPrice } from '../../utils';
+
 import Rating from '../rating/rating';
+import ContactMePopup from '../popups/contact-me-popup';
+
+import { formattedPrice } from '../../utils';
+import { generatePath, Link } from 'react-router-dom';
+import { AppRoute } from '../../const';
 
 type CameraCardProps = {
   camera: Camera;
 }
 
 function CameraCard({camera}: CameraCardProps): JSX.Element {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
+
   const {
     id,
     previewImgWebp,
@@ -20,6 +32,8 @@ function CameraCard({camera}: CameraCardProps): JSX.Element {
     price
   } = camera;
 
+  const correctName = id === 1 ? name : `${category} ${name}`;
+
   return (
     <div className="product-card">
       <div className="product-card__img">
@@ -30,7 +44,7 @@ function CameraCard({camera}: CameraCardProps): JSX.Element {
             srcSet={previewImg2x}
             width="280"
             height="240"
-            alt={name}
+            alt={correctName}
           />
         </picture>
       </div>
@@ -43,7 +57,7 @@ function CameraCard({camera}: CameraCardProps): JSX.Element {
         <Rating rating={rating} reviewCount={reviewCount} />
 
         <p className="product-card__title">
-          {id === 1 ? name : `${category} ${name}`}
+          {correctName}
         </p>
 
         <p className="product-card__price">
@@ -53,11 +67,18 @@ function CameraCard({camera}: CameraCardProps): JSX.Element {
       </div>
 
       <div className="product-card__buttons">
-        <button className="btn btn--purple product-card__btn" type="button">Купить
+        <button
+          className="btn btn--purple product-card__btn"
+          type="button"
+          onClick={togglePopup}
+        >
+          Купить
         </button>
-        <a className="btn btn--transparent" href="#">Подробнее
-        </a>
+        <Link className="btn btn--transparent" to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
+        Подробнее
+        </Link>
       </div>
+      {isOpen && <ContactMePopup content={camera} onClose={togglePopup} />}
     </div>
   );
 }

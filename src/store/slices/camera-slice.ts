@@ -1,30 +1,32 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Cameras } from '../../types/cameras-types/cameras-types';
+import { Camera } from '../../types/cameras-types/cameras-types';
 import { AxiosError, AxiosInstance } from 'axios';
 import { ApiRout } from '../../const';
 
-interface CamerasState {
-  cameras: Cameras;
+interface CameraState {
+  camera: Camera | null;
   isLoading: boolean;
   error: string | null;
 }
 
-const initialState: CamerasState = {
-  cameras: [],
+const initialState: CameraState = {
+  camera: null,
   isLoading: false,
   error: null,
 };
 
-export const fetchCamerasAction = createAsyncThunk<
-  Cameras,
-  { signal: AbortSignal },
+export const fetchCameraAction = createAsyncThunk<
+  Camera,
+  { signal: AbortSignal; id: string },
   { extra: AxiosInstance }
->('cameras/fetchCameras', async ({ signal }, { extra: api }) => {
+>('product/fetchCamera', async ({ signal, id }, { extra: api }) => {
   try {
-    const { data } = await api.get<Cameras>(ApiRout.Cameras, { signal });
+    const { data } = await api.get<Camera>(`${ApiRout.Cameras}/${id}`, {
+      signal,
+    });
 
     return data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (error instanceof AxiosError) {
       if (error.name === 'CanceledError') {
         return Promise.reject(new Error('Запрос отменён'));
@@ -36,25 +38,25 @@ export const fetchCamerasAction = createAsyncThunk<
   }
 });
 
-const camerasSlice = createSlice({
-  name: 'cameras',
+const cameraSlice = createSlice({
+  name: 'camera',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCamerasAction.pending, (state) => {
+      .addCase(fetchCameraAction.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchCamerasAction.fulfilled, (state, action) => {
-        state.cameras = action.payload;
+      .addCase(fetchCameraAction.fulfilled, (state, action) => {
+        state.camera = action.payload;
         state.isLoading = false;
       })
-      .addCase(fetchCamerasAction.rejected, (state, action) => {
+      .addCase(fetchCameraAction.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Ошибка загрузки';
       });
   },
 });
 
-export default camerasSlice.reducer;
+export default cameraSlice.reducer;
