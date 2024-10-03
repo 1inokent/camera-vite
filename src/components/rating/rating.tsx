@@ -1,6 +1,6 @@
 type RatingProps = {
   rating: number;
-  reviewCount: number;
+  reviewCount?: number;
   maxRating?: number;
 }
 

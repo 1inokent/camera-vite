@@ -5,6 +5,7 @@ enum AppRoute {
 
 enum ApiRout {
   Cameras = '/cameras',
+  Review = '/reviews',
 }
 
 const CameraTypes = {

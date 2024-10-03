@@ -12,6 +12,7 @@ import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 
 import { AppRoute } from '../../const';
 import { formattedPrice, splitDescription } from '../../utils';
+import ProductReviews from '../../components/component-review/product-reviews';
 
 function ProdutcPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -93,53 +94,81 @@ function ProdutcPage(): JSX.Element {
     <div className="wrapper">
       <Header />
 
-      <section className="product">
-        <div className="container">
-          <div className="product__img">
-            <picture>
-              <source
-                type="image/webp"
-                srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`}
-              />
-              <img
-                src={`/${previewImg}`}
-                srcSet={`/${previewImg2x}`}
-                width="560"
-                height="480"
-                alt={name}
-              />
-            </picture>
+      <main>
+        <div className="page-content">
+
+          <div className="breadcrumbs">
+            <div className="container">
+              <ul className="breadcrumbs__list">
+                <li className="breadcrumbs__item">
+                  <a className="breadcrumbs__link" href="index.html">
+                    Главная
+                    <svg width="5" height="8" aria-hidden="true">
+                      <use xlinkHref="#icon-arrow-mini"></use>
+                    </svg>
+                  </a>
+                </li>
+                <li className="breadcrumbs__item">
+                  <a className="breadcrumbs__link" href="catalog.html">
+                    Каталог
+                    <svg width="5" height="8" aria-hidden="true">
+                      <use xlinkHref="#icon-arrow-mini"></use>
+                    </svg>
+                  </a>
+                </li>
+                <li className="breadcrumbs__item"><span className="breadcrumbs__link breadcrumbs__link--active">Ретрокамера «Das Auge IV»</span>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="product__content">
-            <h1 className="title title--h3">{correctName}</h1>
+          <div className="page-content__section">
+            <section className="product">
+              <div className="container">
+                <div className="product__img">
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`}
+                    />
+                    <img
+                      src={`/${previewImg}`}
+                      srcSet={`/${previewImg2x}`}
+                      width="560"
+                      height="480"
+                      alt={name}
+                    />
+                  </picture>
+                </div>
+                <div className="product__content">
+                  <h1 className="title title--h3">{correctName}</h1>
 
-            <Rating rating={rating} reviewCount={reviewCount} />
+                  <Rating rating={rating} reviewCount={reviewCount} />
 
-            <p className="product__price"><span className="visually-hidden">Цена:</span>
-              {formattedPrice(price)} ₽
-            </p>
+                  <p className="product__price"><span className="visually-hidden">Цена:</span>
+                    {formattedPrice(price)} ₽
+                  </p>
 
-            <div className="tabs product__tabs">
-              <div className="tabs__controls product__tabs-controls">
-                <button
-                  className={`tabs__control ${isOpenCharacteristics ? 'is-active' : ''}`}
-                  type="button"
-                  onClick={toggleCharacteristics}
-                >
+                  <div className="tabs product__tabs">
+                    <div className="tabs__controls product__tabs-controls">
+                      <button
+                        className={`tabs__control ${isOpenCharacteristics ? 'is-active' : ''}`}
+                        type="button"
+                        onClick={toggleCharacteristics}
+                      >
                   Характеристики
-                </button>
-                <button
-                  className={`tabs__control ${isOpenDescription ? 'is-active' : ''}`}
-                  type="button"
-                  onClick={toggleDescription}
-                >
+                      </button>
+                      <button
+                        className={`tabs__control ${isOpenDescription ? 'is-active' : ''}`}
+                        type="button"
+                        onClick={toggleDescription}
+                      >
                     Описание
-                </button>
-              </div>
-              <div className="tabs__content">
+                      </button>
+                    </div>
+                    <div className="tabs__content">
 
-                {
-                  isOpenCharacteristics &&
+                      {
+                        isOpenCharacteristics &&
                   <div className={`tabs__element ${isOpenCharacteristics ? 'is-active' : ''}`}>
                     <ul className="product__tabs-list">
                       <li className="item-list">
@@ -160,22 +189,28 @@ function ProdutcPage(): JSX.Element {
                       </li>
                     </ul>
                   </div>
-                }
+                      }
 
-                {
-                  isOpenDescription &&
+                      {
+                        isOpenDescription &&
                   <div className={`tabs__element ${isOpenDescription ? 'is-active' : ''}`}>
                     <div className="product__tabs-text">
                       <p>{firstSentence}</p>
                       {remainingDescription && <p>{remainingDescription}</p>}
                     </div>
                   </div>
-                }
+                      }
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
           </div>
+
+          <ProductReviews />
+
         </div>
-      </section>
+      </main>
 
       <Footer />
     </div>
