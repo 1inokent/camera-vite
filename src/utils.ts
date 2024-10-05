@@ -18,4 +18,37 @@ const splitDescription = (description: string) => {
   return { firstSentence, remainingDescription };
 };
 
-export { formattedPrice, standardizePhoneNumber, splitDescription };
+const formatDate = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  const options: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: 'long',
+  };
+
+  return date.toLocaleDateString('ru-RU', options);
+};
+
+const smoothScrollToTop = () => {
+  const SCROLL_DURATION = 300;
+  const SCROLL_STEP = 5;
+
+  const totalScrollDistance = window.scrollY;
+
+  const scrollStepAmount =
+    -totalScrollDistance / (SCROLL_DURATION / SCROLL_STEP);
+  const step = () => {
+    if (window.scrollY !== 0) {
+      window.scrollBy(0, scrollStepAmount);
+      requestAnimationFrame(step);
+    }
+  };
+  requestAnimationFrame(step);
+};
+
+export {
+  formattedPrice,
+  standardizePhoneNumber,
+  splitDescription,
+  formatDate,
+  smoothScrollToTop,
+};

@@ -5,6 +5,7 @@ type ProductReviewsListProps = {
   reviews: CameraReviews;
 }
 
+
 function ProductReviewsList({reviews}: ProductReviewsListProps): JSX.Element {
   return (
     <ul className="review-block__list">

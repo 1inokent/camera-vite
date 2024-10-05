@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { fetchCamerasAction } from '../../store/slices/cameras-slice';
+import { setError } from '../../store/slices/error-slice';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import CameraList from '../../components/cameras-components/cameras-list';
-import { setError } from '../../store/slices/error-slice';
+import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 
 function CatalogPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -74,22 +75,7 @@ function CatalogPage(): JSX.Element {
 
         <div className="page-content">
 
-          <div className="breadcrumbs">
-            <div className="container">
-              <ul className="breadcrumbs__list">
-                <li className="breadcrumbs__item">
-                  <a className="breadcrumbs__link" href="index.html">Главная
-                    <svg width="5" height="8" aria-hidden="true">
-                      <use xlinkHref="#icon-arrow-mini"></use>
-                    </svg>
-                  </a>
-                </li>
-                <li className="breadcrumbs__item">
-                  <span className="breadcrumbs__link breadcrumbs__link--active">Каталог</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <Breadcrumbs />
 
           <section className="catalog">
             <div className="container">

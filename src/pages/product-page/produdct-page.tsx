@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
@@ -9,10 +9,11 @@ import Rating from '../../components/rating/rating';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
+import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
+import ProductReviews from '../../components/component-review/product-reviews';
 
 import { AppRoute } from '../../const';
 import { formattedPrice, splitDescription } from '../../utils';
-import ProductReviews from '../../components/component-review/product-reviews';
 
 function ProdutcPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -22,14 +23,14 @@ function ProdutcPage(): JSX.Element {
   const [isOpenDescription, setIsOpenDescription] = useState(false);
   const [isOpenCharacteristics, setIsOpenCharacteristics] = useState(true);
 
-  const toggleDescription = () => {
+  const toggleDescription = useCallback(() => {
     setIsOpenDescription(true);
     setIsOpenCharacteristics(false);
-  };
-  const toggleCharacteristics = () => {
+  }, []);
+  const toggleCharacteristics = useCallback(() => {
     setIsOpenCharacteristics(true);
     setIsOpenDescription(false);
-  };
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -97,30 +98,8 @@ function ProdutcPage(): JSX.Element {
       <main>
         <div className="page-content">
 
-          <div className="breadcrumbs">
-            <div className="container">
-              <ul className="breadcrumbs__list">
-                <li className="breadcrumbs__item">
-                  <a className="breadcrumbs__link" href="index.html">
-                    Главная
-                    <svg width="5" height="8" aria-hidden="true">
-                      <use xlinkHref="#icon-arrow-mini"></use>
-                    </svg>
-                  </a>
-                </li>
-                <li className="breadcrumbs__item">
-                  <a className="breadcrumbs__link" href="catalog.html">
-                    Каталог
-                    <svg width="5" height="8" aria-hidden="true">
-                      <use xlinkHref="#icon-arrow-mini"></use>
-                    </svg>
-                  </a>
-                </li>
-                <li className="breadcrumbs__item"><span className="breadcrumbs__link breadcrumbs__link--active">Ретрокамера «Das Auge IV»</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <Breadcrumbs productName={correctName} />
+
           <div className="page-content__section">
             <section className="product">
               <div className="container">
