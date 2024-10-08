@@ -3,6 +3,7 @@ import { createAPI } from '../service/api';
 import camerasSlice from './slices/cameras-slice';
 import cameraSlice from './slices/camera-slice';
 import errorSlice from './slices/error-slice';
+import cameraReviewSlice from './slices/camera-review-slice';
 
 const api = createAPI();
 
@@ -11,6 +12,7 @@ const store = configureStore({
     error: errorSlice,
     cameras: camerasSlice,
     camera: cameraSlice,
+    cameraReview: cameraReviewSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

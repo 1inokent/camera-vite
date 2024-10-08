@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
@@ -9,6 +9,8 @@ import Rating from '../../components/rating/rating';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
+import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
+import ProductReviews from '../../components/component-review/product-reviews';
 
 import { AppRoute } from '../../const';
 import { formattedPrice, splitDescription } from '../../utils';
@@ -21,14 +23,14 @@ function ProdutcPage(): JSX.Element {
   const [isOpenDescription, setIsOpenDescription] = useState(false);
   const [isOpenCharacteristics, setIsOpenCharacteristics] = useState(true);
 
-  const toggleDescription = () => {
+  const toggleDescription = useCallback(() => {
     setIsOpenDescription(true);
     setIsOpenCharacteristics(false);
-  };
-  const toggleCharacteristics = () => {
+  }, []);
+  const toggleCharacteristics = useCallback(() => {
     setIsOpenCharacteristics(true);
     setIsOpenDescription(false);
-  };
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -93,53 +95,59 @@ function ProdutcPage(): JSX.Element {
     <div className="wrapper">
       <Header />
 
-      <section className="product">
-        <div className="container">
-          <div className="product__img">
-            <picture>
-              <source
-                type="image/webp"
-                srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`}
-              />
-              <img
-                src={`/${previewImg}`}
-                srcSet={`/${previewImg2x}`}
-                width="560"
-                height="480"
-                alt={name}
-              />
-            </picture>
-          </div>
-          <div className="product__content">
-            <h1 className="title title--h3">{correctName}</h1>
+      <main>
+        <div className="page-content">
 
-            <Rating rating={rating} reviewCount={reviewCount} />
+          <Breadcrumbs productName={correctName} />
 
-            <p className="product__price"><span className="visually-hidden">Цена:</span>
-              {formattedPrice(price)} ₽
-            </p>
+          <div className="page-content__section">
+            <section className="product">
+              <div className="container">
+                <div className="product__img">
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`}
+                    />
+                    <img
+                      src={`/${previewImg}`}
+                      srcSet={`/${previewImg2x}`}
+                      width="560"
+                      height="480"
+                      alt={name}
+                    />
+                  </picture>
+                </div>
+                <div className="product__content">
+                  <h1 className="title title--h3">{correctName}</h1>
 
-            <div className="tabs product__tabs">
-              <div className="tabs__controls product__tabs-controls">
-                <button
-                  className={`tabs__control ${isOpenCharacteristics ? 'is-active' : ''}`}
-                  type="button"
-                  onClick={toggleCharacteristics}
-                >
+                  <Rating rating={rating} reviewCount={reviewCount} />
+
+                  <p className="product__price"><span className="visually-hidden">Цена:</span>
+                    {formattedPrice(price)} ₽
+                  </p>
+
+                  <div className="tabs product__tabs">
+                    <div className="tabs__controls product__tabs-controls">
+                      <button
+                        className={`tabs__control ${isOpenCharacteristics ? 'is-active' : ''}`}
+                        type="button"
+                        onClick={toggleCharacteristics}
+                      >
                   Характеристики
-                </button>
-                <button
-                  className={`tabs__control ${isOpenDescription ? 'is-active' : ''}`}
-                  type="button"
-                  onClick={toggleDescription}
-                >
+                      </button>
+                      <button
+                        className={`tabs__control ${isOpenDescription ? 'is-active' : ''}`}
+                        type="button"
+                        onClick={toggleDescription}
+                      >
                     Описание
-                </button>
-              </div>
-              <div className="tabs__content">
+                      </button>
+                    </div>
+                    <div className="tabs__content">
 
-                {
-                  isOpenCharacteristics &&
+                      {
+                        isOpenCharacteristics &&
                   <div className={`tabs__element ${isOpenCharacteristics ? 'is-active' : ''}`}>
                     <ul className="product__tabs-list">
                       <li className="item-list">
@@ -160,22 +168,28 @@ function ProdutcPage(): JSX.Element {
                       </li>
                     </ul>
                   </div>
-                }
+                      }
 
-                {
-                  isOpenDescription &&
+                      {
+                        isOpenDescription &&
                   <div className={`tabs__element ${isOpenDescription ? 'is-active' : ''}`}>
                     <div className="product__tabs-text">
                       <p>{firstSentence}</p>
                       {remainingDescription && <p>{remainingDescription}</p>}
                     </div>
                   </div>
-                }
+                      }
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
           </div>
+
+          <ProductReviews />
+
         </div>
-      </section>
+      </main>
 
       <Footer />
     </div>
