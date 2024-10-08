@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
@@ -11,26 +11,16 @@ import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import ProductReviews from '../../components/component-review/product-reviews';
+import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
 
 import { AppRoute } from '../../const';
-import { formattedPrice, splitDescription } from '../../utils';
+import { formattedPrice } from '../../utils';
+import ProductSimilar from '../../components/product-similar/product-similar';
 
-function ProdutcPage(): JSX.Element {
+function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const { camera, error, isLoading } = useAppSelector((state) => state.camera);
   const { id } = useParams<{ id: string }>();
-
-  const [isOpenDescription, setIsOpenDescription] = useState(false);
-  const [isOpenCharacteristics, setIsOpenCharacteristics] = useState(true);
-
-  const toggleDescription = useCallback(() => {
-    setIsOpenDescription(true);
-    setIsOpenCharacteristics(false);
-  }, []);
-  const toggleCharacteristics = useCallback(() => {
-    setIsOpenCharacteristics(true);
-    setIsOpenDescription(false);
-  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -65,7 +55,7 @@ function ProdutcPage(): JSX.Element {
 
   if (error) {
     <>
-      <p>{error}</p>
+      <h2>{error}</h2>
       <Link to={AppRoute.CatalogPage}>
         <p style={{ color: 'blue', textDecoration: 'underline'}}>Нет данных камеры</p>
       </Link>
@@ -89,7 +79,6 @@ function ProdutcPage(): JSX.Element {
   } = camera;
 
   const correctName = Number(id) === 1 ? name : `${category} ${name}`;
-  const { firstSentence, remainingDescription } = splitDescription(description);
 
   return (
     <div className="wrapper">
@@ -127,66 +116,23 @@ function ProdutcPage(): JSX.Element {
                     {formattedPrice(price)} ₽
                   </p>
 
-                  <div className="tabs product__tabs">
-                    <div className="tabs__controls product__tabs-controls">
-                      <button
-                        className={`tabs__control ${isOpenCharacteristics ? 'is-active' : ''}`}
-                        type="button"
-                        onClick={toggleCharacteristics}
-                      >
-                  Характеристики
-                      </button>
-                      <button
-                        className={`tabs__control ${isOpenDescription ? 'is-active' : ''}`}
-                        type="button"
-                        onClick={toggleDescription}
-                      >
-                    Описание
-                      </button>
-                    </div>
-                    <div className="tabs__content">
+                  <ProductTabsMemonizated
+                    category={category}
+                    description={description}
+                    level={level}
+                    type={type}
+                    vendorCode={vendorCode}
+                  />
 
-                      {
-                        isOpenCharacteristics &&
-                  <div className={`tabs__element ${isOpenCharacteristics ? 'is-active' : ''}`}>
-                    <ul className="product__tabs-list">
-                      <li className="item-list">
-                        <span className="item-list__title">Артикул:</span>
-                        <p className="item-list__text"> {vendorCode}</p>
-                      </li>
-                      <li className="item-list">
-                        <span className="item-list__title">Категория:</span>
-                        <p className="item-list__text">{category}</p>
-                      </li>
-                      <li className="item-list">
-                        <span className="item-list__title">Тип камеры:</span>
-                        <p className="item-list__text">{type}</p>
-                      </li>
-                      <li className="item-list">
-                        <span className="item-list__title">Уровень:</span>
-                        <p className="item-list__text">{level}</p>
-                      </li>
-                    </ul>
-                  </div>
-                      }
-
-                      {
-                        isOpenDescription &&
-                  <div className={`tabs__element ${isOpenDescription ? 'is-active' : ''}`}>
-                    <div className="product__tabs-text">
-                      <p>{firstSentence}</p>
-                      {remainingDescription && <p>{remainingDescription}</p>}
-                    </div>
-                  </div>
-                      }
-                    </div>
-                  </div>
                 </div>
               </div>
             </section>
           </div>
 
-          <ProductReviews />
+          <div className="page-content__section">
+            <ProductSimilar />
+            <ProductReviews />
+          </div>
 
         </div>
       </main>
@@ -196,4 +142,4 @@ function ProdutcPage(): JSX.Element {
   );
 }
 
-export default ProdutcPage;
+export default ProductPage;

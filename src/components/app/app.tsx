@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import CatalogPage from '../../pages/catalog-page/catalog-page';
-import ProdutcPage from '../../pages/product-page/produdct-page';
+import ProductPage from '../../pages/product-page/product-page';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 
 function App(): JSX.Element {
@@ -10,7 +10,7 @@ function App(): JSX.Element {
       <Routes>
         <Route path={AppRoute.CatalogPage}>
           <Route index element={<CatalogPage />} />
-          <Route path={AppRoute.ProductPage} element={<ProdutcPage />} />
+          <Route path={AppRoute.ProductPage} element={<ProductPage />} />
           <Route path='*' element={<NotFoundScreen />} />
         </Route>
       </Routes>
