@@ -84,7 +84,7 @@ function ProductReviews(): JSX.Element {
   }
 
   return (
-    <>
+    <div className="page-content__section">
       <section className="review-block">
         <div className="container">
           <div className="page-content__headed">
@@ -124,7 +124,7 @@ function ProductReviews(): JSX.Element {
       </section>
 
       <ButtonScrollToTop />
-    </>
+    </div>
   );
 }
 

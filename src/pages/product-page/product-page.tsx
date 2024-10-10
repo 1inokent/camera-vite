@@ -10,12 +10,13 @@ import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
-import ProductReviews from '../../components/component-review/product-reviews';
+import ProductReviews from '../../components/product-reviews/product-reviews';
 import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
 
 import { AppRoute } from '../../const';
 import { formattedPrice } from '../../utils';
-import ProductSimilar from '../../components/product-similar/product-similar';
+import ProductSimilar from '../../components/products-similar/products-similar';
+import { fetchCamerasSimilarAction } from '../../store/slices/cameras-similar-slice';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -31,6 +32,7 @@ function ProductPage(): JSX.Element {
         if (isMounted) {
           if (id) {
             await dispatch(fetchCameraAction({ signal: abortController.signal, id }));
+            await dispatch(fetchCamerasSimilarAction({ signal: abortController.signal, id }));
           }
         }
       } catch (err) {
@@ -57,7 +59,7 @@ function ProductPage(): JSX.Element {
     <>
       <h2>{error}</h2>
       <Link to={AppRoute.CatalogPage}>
-        <p style={{ color: 'blue', textDecoration: 'underline'}}>Нет данных камеры</p>
+        <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
       </Link>
     </>;
   }
@@ -129,10 +131,8 @@ function ProductPage(): JSX.Element {
             </section>
           </div>
 
-          <div className="page-content__section">
-            <ProductSimilar />
-            <ProductReviews />
-          </div>
+          <ProductSimilar />
+          <ProductReviews />
 
         </div>
       </main>
