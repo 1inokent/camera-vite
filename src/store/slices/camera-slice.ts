@@ -2,41 +2,45 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Camera } from '../../types/cameras-types/cameras-types';
 import { AxiosError, AxiosInstance } from 'axios';
 import { ApiRout } from '../../const';
+import { clearError, setError } from './error-slice';
 
 interface CameraState {
   camera: Camera | null;
   isLoading: boolean;
-  error: string | null;
 }
 
 const initialState: CameraState = {
   camera: null,
   isLoading: false,
-  error: null,
 };
 
 export const fetchCameraAction = createAsyncThunk<
   Camera,
   { signal: AbortSignal; id: string },
-  { extra: AxiosInstance }
->('product/fetchCamera', async ({ signal, id }, { extra: api }) => {
-  try {
-    const { data } = await api.get<Camera>(`${ApiRout.Cameras}/${id}`, {
-      signal,
-    });
+  { extra: AxiosInstance; rejectValue: string }
+>(
+  'product/fetchCamera',
+  async ({ signal, id }, { extra: api, dispatch, rejectWithValue }) => {
+    dispatch(clearError());
+    try {
+      const { data } = await api.get<Camera>(`${ApiRout.Cameras}/${id}`, {
+        signal,
+      });
 
-    return data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      if (error.name === 'CanceledError') {
-        return Promise.reject(new Error('Запрос отменён'));
+      return data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.name === 'CanceledError') {
+          return rejectWithValue('Запрос был отменён');
+        }
+        const errorMessage = error.message || 'Произошла неизвестная ошибка';
+        dispatch(setError(errorMessage));
+        return rejectWithValue(errorMessage);
       }
-      throw new Error(error.message);
+      return rejectWithValue('Произошла неизвестная ошибка');
     }
-
-    throw new Error('Произошла неизвестная ошибка');
   }
-});
+);
 
 const cameraSlice = createSlice({
   name: 'camera',
@@ -46,15 +50,13 @@ const cameraSlice = createSlice({
     builder
       .addCase(fetchCameraAction.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
       })
       .addCase(fetchCameraAction.fulfilled, (state, action) => {
         state.camera = action.payload;
         state.isLoading = false;
       })
-      .addCase(fetchCameraAction.rejected, (state, action) => {
+      .addCase(fetchCameraAction.rejected, (state) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Ошибка загрузки';
       });
   },
 });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import debounce from 'lodash/debounce';
 
@@ -10,7 +10,6 @@ import { setError } from '../../store/slices/error-slice';
 import ProductReviewsList from './product-reviews-list';
 import ButtonScrollToTop from '../button-scroll-to-top/button-scroll-to-top';
 
-import { AppRoute } from '../../const';
 
 const MIN_DISPLAYED_REVIEWS = 0;
 const REVIEWS_INCREMENT = 3;
@@ -19,7 +18,8 @@ const SCROLL_DEBOUNCE_DELAY = 500;
 
 function ProductReviews(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { error, reviews, isLoading } = useAppSelector((state) => state.cameraReview);
+  const { reviews, isLoading } = useAppSelector((state) => state.cameraReview);
+  const errorMessage = useAppSelector((state) => state.error.message);
   const { id } = useParams<{ id: string }>();
 
   const [displayedReviewsCount, setDisplayedReviewsCount] = useState(REVIEWS_INCREMENT);
@@ -40,7 +40,7 @@ function ProductReviews(): JSX.Element {
         }
       } catch (err) {
         if (isMounted) {
-          const errMessage = err instanceof Error ? err.message : 'Ошибка загрузки камер';
+          const errMessage = err instanceof Error ? err.message : 'Нет данных для отзывов';
           dispatch(setError(errMessage));
         }
       }
@@ -74,13 +74,8 @@ function ProductReviews(): JSX.Element {
     };
   }, [displayedReviewsCount, handleScroll, sortedReviews.length]);
 
-  if (error) {
-    <>
-      <p>{error}</p>
-      <Link to={AppRoute.CatalogPage}>
-        <p style={{ color: 'blue', textDecoration: 'underline'}}>Нет данных отзыва</p>
-      </Link>
-    </>;
+  if (errorMessage) {
+    <p style={{ color: 'blue', textDecoration: 'underline'}}>{errorMessage}</p>;
   }
 
   return (
@@ -94,32 +89,31 @@ function ProductReviews(): JSX.Element {
             </button>
           </div>
 
-          <ProductReviewsList reviews={displayedReviews} />
+          {sortedReviews.length === 0 ? ( // Проверка на наличие отзывов
+            <p>Нет отзывов</p>
+          ) : (
+            <>
+              <ProductReviewsList reviews={displayedReviews} />
 
-          <div className="review-block__buttons">
-            {
-              displayedReviewsCount < sortedReviews.length && !isLoading && (
-                <button
-                  className="btn btn--purple"
-                  type="button"
-                  onClick={handleShowMoreReviews}
-                >
-                      Показать больше отзывов
+              <div className="review-block__buttons">
+                {displayedReviewsCount < sortedReviews.length && !isLoading && (
+                  <button
+                    className="btn btn--purple"
+                    type="button"
+                    onClick={handleShowMoreReviews}
+                  >
+                    Показать больше отзывов
+                  </button>
+                )}
+              </div>
+
+              {isLoading && (
+                <button className="btn btn--purple" type="button" disabled>
+                  Загрузка...
                 </button>
-              )
-            }
-          </div>
-
-          {
-            isLoading &&
-            <button
-              className="btn btn--purple"
-              type="button"
-              disabled
-            >
-                      Загрузка...
-            </button>
-          }
+              )}
+            </>
+          )}
         </div>
       </section>
 

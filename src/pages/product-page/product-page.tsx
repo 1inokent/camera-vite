@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { fetchCameraAction } from '../../store/slices/camera-slice';
-import { setError } from '../../store/slices/error-slice';
+import { clearError, setError } from '../../store/slices/error-slice';
 
 import Rating from '../../components/rating/rating';
 import Footer from '../../components/footer/footer';
@@ -16,11 +16,11 @@ import ProductTabsMemonizated from '../../components/product-tabs-memo/product-t
 import { AppRoute } from '../../const';
 import { formattedPrice } from '../../utils';
 import ProductSimilar from '../../components/products-similar/products-similar';
-import { fetchCamerasSimilarAction } from '../../store/slices/cameras-similar-slice';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { camera, error, isLoading } = useAppSelector((state) => state.camera);
+  const errorMessage = useAppSelector((state) => state.error.message);
+  const { camera, isLoading } = useAppSelector((state) => state.camera);
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -29,15 +29,13 @@ function ProductPage(): JSX.Element {
 
     const fetchData = async () => {
       try {
-        if (isMounted) {
-          if (id) {
-            await dispatch(fetchCameraAction({ signal: abortController.signal, id }));
-            await dispatch(fetchCamerasSimilarAction({ signal: abortController.signal, id }));
-          }
+        if (isMounted && id) {
+          dispatch(clearError());
+          await dispatch(fetchCameraAction({ signal: abortController.signal, id }));
         }
       } catch (err) {
-        if (isMounted) {
-          const errMessage = err instanceof Error ? err.message : 'Ошибка загрузки камер';
+        if (isMounted && !(err === 'Запрос был отменён')) {
+          const errMessage = typeof err === 'string' ? err : 'Ошибка загрузки камер';
           dispatch(setError(errMessage));
         }
       }
@@ -51,17 +49,23 @@ function ProductPage(): JSX.Element {
     };
   }, [dispatch, id]);
 
-  if (isLoading || !camera) {
+  if (isLoading) {
     return <SpinnerLoader />;
   }
 
-  if (error) {
-    <>
-      <h2>{error}</h2>
+  if (errorMessage && !camera) {
+    return (
       <Link to={AppRoute.CatalogPage}>
+        <h2>{errorMessage}</h2>
         <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
       </Link>
-    </>;
+    );
+  }
+
+  if (!camera) {
+    return (
+      <SpinnerLoader />
+    );
   }
 
   const {

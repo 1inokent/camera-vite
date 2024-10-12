@@ -2,42 +2,46 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { CameraReviews } from '../../types/camera-review-types/camera-review-types';
 import { AxiosError, AxiosInstance } from 'axios';
 import { ApiRout } from '../../const';
+import { clearError, setError } from './error-slice';
 
 interface CameraReviewState {
   reviews: CameraReviews;
   isLoading: boolean;
-  error: string | null;
 }
 
 const initialState: CameraReviewState = {
   reviews: [],
   isLoading: false,
-  error: null,
 };
 
 export const fetchCameraReviewAction = createAsyncThunk<
   CameraReviews,
   { signal: AbortSignal; id: string },
-  { extra: AxiosInstance }
->('product/fetchCameraReview', async ({ signal, id }, { extra: api }) => {
-  try {
-    const { data } = await api.get<CameraReviews>(
-      `${ApiRout.Cameras}/${id}${ApiRout.Review}`,
-      { signal }
-    );
+  { extra: AxiosInstance; rejectValue: string }
+>(
+  'product/fetchCameraReview',
+  async ({ signal, id }, { extra: api, dispatch, rejectWithValue }) => {
+    dispatch(clearError());
+    try {
+      const { data } = await api.get<CameraReviews>(
+        `${ApiRout.Cameras}/${id}${ApiRout.Review}`,
+        { signal }
+      );
 
-    return data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      if (error.name === 'CanceledError') {
-        return Promise.reject(new Error('Запрос отменён'));
+      return data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.name === 'CanceledError') {
+          return rejectWithValue('Запрос был отменён');
+        }
+        const errorMessage = error.message || 'Произошла неизвестная ошибка';
+        dispatch(setError(errorMessage));
+        return rejectWithValue(errorMessage);
       }
-      throw new Error(error.message);
+      return rejectWithValue('Произошла неизвестная ошибка');
     }
-
-    throw new Error('Произошла неизвестная ошибка');
   }
-});
+);
 
 const cameraReviewSlice = createSlice({
   name: 'cameraReview',
@@ -47,15 +51,13 @@ const cameraReviewSlice = createSlice({
     builder
       .addCase(fetchCameraReviewAction.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
       })
       .addCase(fetchCameraReviewAction.fulfilled, (state, action) => {
         state.reviews = action.payload;
         state.isLoading = false;
       })
-      .addCase(fetchCameraReviewAction.rejected, (state, action) => {
+      .addCase(fetchCameraReviewAction.rejected, (state) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Ошибка загрузки';
       });
   },
 });
