@@ -10,9 +10,10 @@ import { AppRoute } from '../../const';
 
 type CameraCardProps = {
   camera: Camera;
+  isActive?: boolean;
 }
 
-function CameraCard({camera}: CameraCardProps): JSX.Element {
+function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
   const togglePopup = () => {
@@ -35,10 +36,10 @@ function CameraCard({camera}: CameraCardProps): JSX.Element {
   const correctName = id === 1 ? name : `${category} ${name}`;
 
   return (
-    <div className="product-card">
+    <div className={`product-card ${isActive ? 'is-active' : ''}`}>
       <div className="product-card__img">
         <picture>
-          <source type="image/webp" srcSet={`${previewImgWebp}, ${previewImgWebp2x}`} />
+          <source type="image/webp" srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`} />
           <img
             src={previewImg}
             srcSet={previewImg2x}

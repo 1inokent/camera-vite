@@ -2,17 +2,19 @@ import { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { fetchCamerasAction } from '../../store/slices/cameras-slice';
-import { setError } from '../../store/slices/error-slice';
+import { clearError, setError } from '../../store/slices/error-slice';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import CameraList from '../../components/cameras-components/cameras-list';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
+import { AppRoute } from '../../const';
+import { Link } from 'react-router-dom';
 
 function CatalogPage(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { cameras, error, isLoading } = useAppSelector((state) => state.cameras);
+  const { cameras, isLoading } = useAppSelector((state) => state.cameras);
   const errorMessage = useAppSelector((state) => state.error.message);
 
   useEffect(() => {
@@ -21,12 +23,12 @@ function CatalogPage(): JSX.Element {
     const fetchData = async () => {
       try {
         if (isMounted) {
+          dispatch(clearError());
           await dispatch(fetchCamerasAction({ signal: abortController.signal }));
         }
       } catch (err) {
-        if (isMounted) {
-          const errMessage = err instanceof Error ? err.message : 'Ошибка загрузки камер';
-
+        if (isMounted && !(err === 'Запрос был отменён')) {
+          const errMessage = typeof err === 'string' ? err : 'Ошибка загрузки камер';
           dispatch(setError(errMessage));
         }
       }
@@ -45,8 +47,22 @@ function CatalogPage(): JSX.Element {
     return <SpinnerLoader />;
   }
 
-  if (error) {
-    <p>{error}</p>;
+  if (errorMessage && !cameras) {
+    return (
+      <Link to={AppRoute.CatalogPage}>
+        <h2>{errorMessage}</h2>
+        <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
+      </Link>
+    );
+  }
+
+  if (!cameras) {
+    return (
+      <Link to={AppRoute.CatalogPage}>
+        <h2>Нет данных для камер</h2>
+        <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
+      </Link>
+    );
   }
 
   return (
@@ -85,7 +101,7 @@ function CatalogPage(): JSX.Element {
               <h1 className="title title--h2">Каталог фото - и видеотехники</h1>
               <div className="page-content__columns">
                 <div className="catalog__aside">
-                  <img src="img/banner.png" />
+                  <img src="/img/banner.png" />
                 </div>
 
                 <div className="catalog__content">

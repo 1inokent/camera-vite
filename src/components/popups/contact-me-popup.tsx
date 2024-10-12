@@ -102,10 +102,10 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
           <div className="basket-item basket-item--short">
             <div className="basket-item__img">
               <picture>
-                <source type="image/webp" srcSet={`${previewImgWebp}, ${previewImgWebp2x}`} />
+                <source type="image/webp" srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`} />
                 <img
-                  src={previewImg}
-                  srcSet={previewImg2x}
+                  src={`/${previewImg}`}
+                  srcSet={`/${previewImg2x}`}
                   width="140"
                   height="120"
                   alt={correctName}

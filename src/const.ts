@@ -6,6 +6,7 @@ enum AppRoute {
 enum ApiRout {
   Cameras = '/cameras',
   Review = '/reviews',
+  Similar = '/similar',
 }
 
 const CameraTypes = {
