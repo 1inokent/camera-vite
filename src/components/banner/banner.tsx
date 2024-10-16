@@ -25,7 +25,12 @@ function Banner(): JSX.Element {
         ? 'background: #7575E2; width: 16px; height: 16px; opacity: 1;'
         : ' width: 16px; height: 16px; opacity: 1;';
 
-      return `<span class="${className}" style="${bulletStyle} --swiper-pagination-bullet-inactive-color: #F4F4FC;"></span>`;
+      return `<span
+        class="${className}"
+        style="${bulletStyle}
+        --swiper-pagination-bullet-inactive-color: #F4F4FC;"
+        data-index="${index}">
+        </span>`;
     },
     el: '.swiper-pagination',
   };
