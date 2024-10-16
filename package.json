@@ -23,6 +23,7 @@
     "react-hook-form": "7.53.0",
     "react-redux": "8.1.1",
     "react-router-dom": "6.14.0",
+    "swiper": "11.1.14",
     "use-mask-input": "3.4.0"
   },
   "devDependencies": {

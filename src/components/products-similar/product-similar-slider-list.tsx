@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { Cameras } from '../../types/cameras-types/cameras-types';
 import CameraCard from '../cameras-components/camera-card';
 
+const ITEMS_PER_PAGE = 3;
+
 type ProductSimilarListProps = {
   camerasSimilar: Cameras;
 }
 
 function ProductSimilarList({camerasSimilar}: ProductSimilarListProps): JSX.Element {
   const [activeIndex, setActiveIndex] = useState(0);
-  const itemsPerPage = 3;
   const totalItems = camerasSimilar.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   const handleNext = () => {
     if (activeIndex < totalPages - 1) {
@@ -25,18 +26,14 @@ function ProductSimilarList({camerasSimilar}: ProductSimilarListProps): JSX.Elem
   };
 
   const getActiveClass = (index: number) => {
-    const start = activeIndex * itemsPerPage;
-    return index >= start && index < start + itemsPerPage;
+    const start = activeIndex * ITEMS_PER_PAGE;
+    return index >= start && index < start + ITEMS_PER_PAGE;
   };
 
   return (
     <>
       <div
         className="product-similar__slider-list"
-        style={{
-          display: 'flex',
-          transition: 'transform 0.5s ease',
-        }}
       >
         {
           camerasSimilar.map((camera, index) => (

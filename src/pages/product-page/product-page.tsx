@@ -15,7 +15,7 @@ import ProductTabsMemonizated from '../../components/product-tabs-memo/product-t
 
 import { AppRoute } from '../../const';
 import { formattedPrice } from '../../utils';
-import ProductSimilar from '../../components/products-similar/products-similar';
+import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -102,7 +102,7 @@ function ProductPage(): JSX.Element {
                   <picture>
                     <source
                       type="image/webp"
-                      srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`}
+                      srcSet={`/${previewImgWebp}, /${previewImgWebp2x}`}
                     />
                     <img
                       src={`/${previewImg}`}
@@ -122,6 +122,12 @@ function ProductPage(): JSX.Element {
                     {formattedPrice(price)} ₽
                   </p>
 
+                  <button className="btn btn--purple" type="button">
+                    <svg width="24" height="16" aria-hidden="true">
+                      <use xlinkHref="#icon-add-basket"></use>
+                    </svg>Добавить в корзину
+                  </button>
+
                   <ProductTabsMemonizated
                     category={category}
                     description={description}
@@ -135,7 +141,7 @@ function ProductPage(): JSX.Element {
             </section>
           </div>
 
-          <ProductSimilar />
+          <ProductSimilarSlider />
           <ProductReviews />
 
         </div>

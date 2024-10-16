@@ -45,10 +45,24 @@ const smoothScrollToTop = () => {
   requestAnimationFrame(step);
 };
 
+const getBannerText = (index: number) => {
+  switch (index) {
+    case 0:
+      return 'Профессиональная камера от известного производителя';
+    case 1:
+      return 'Для истинных ценителей и коллекционеров';
+    case 2:
+      return 'Маленькое чудо фотографии';
+    default:
+      return 'Профессиональная камера от известного производителя';
+  }
+};
+
 export {
   formattedPrice,
   standardizePhoneNumber,
   splitDescription,
   formatDate,
   smoothScrollToTop,
+  getBannerText,
 };

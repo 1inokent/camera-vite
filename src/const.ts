@@ -7,6 +7,7 @@ enum ApiRout {
   Cameras = '/cameras',
   Review = '/reviews',
   Similar = '/similar',
+  Promo = '/promo'
 }
 
 const CameraTypes = {
