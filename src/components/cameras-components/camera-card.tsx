@@ -41,8 +41,8 @@ function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
         <picture>
           <source type="image/webp" srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`} />
           <img
-            src={previewImg}
-            srcSet={previewImg2x}
+            src={`/${previewImg}`}
+            srcSet={`/${previewImg2x}`}
             width="280"
             height="240"
             alt={correctName}

@@ -34,10 +34,6 @@ function ProductSimilarList({camerasSimilar}: ProductSimilarListProps): JSX.Elem
     <>
       <div
         className="product-similar__slider-list"
-        style={{
-          display: 'flex',
-          transition: 'transform 0.5s ease',
-        }}
       >
         {
           camerasSimilar.map((camera, index) => (

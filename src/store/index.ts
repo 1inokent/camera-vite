@@ -6,6 +6,7 @@ import cameraSlice from './slices/camera-slice';
 import errorSlice from './slices/error-slice';
 import cameraReviewSlice from './slices/camera-review-slice';
 import camerasSimilarSlice from './slices/cameras-similar-slice';
+import camerasPromoSlice from './slices/cameras-promo-slice';
 
 const api = createAPI();
 
@@ -16,6 +17,7 @@ const store = configureStore({
     camera: cameraSlice,
     cameraReview: cameraReviewSlice,
     camerasSimilar: camerasSimilarSlice,
+    camerasPromo: camerasPromoSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
