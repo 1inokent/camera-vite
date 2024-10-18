@@ -55,10 +55,12 @@ function ProductPage(): JSX.Element {
 
   if (errorMessage && !camera) {
     return (
-      <Link to={AppRoute.CatalogPage}>
+      <>
         <h2>{errorMessage}</h2>
-        <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
-      </Link>
+        <Link to={AppRoute.CatalogPage}>
+          <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
+        </Link>
+      </>
     );
   }
 
