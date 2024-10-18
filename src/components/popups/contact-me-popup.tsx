@@ -6,6 +6,8 @@ import { Camera } from '../../types/cameras-types/cameras-types';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { PHONE_REGULAR_EXPRESSION } from '../../const';
 import { useHookFormMask } from 'use-mask-input';
+import { useAppDispatch } from '../../store/hook';
+import { sendOrderCameraAction } from '../../store/slices/camera-slice';
 
 type ContactMePopupProps = {
   content: Camera;
@@ -17,6 +19,7 @@ type PopupInputProps = {
 }
 
 function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
+  const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
 
   const {register, setFocus, handleSubmit, formState: { errors }} = useForm<PopupInputProps>();
@@ -87,9 +90,10 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
 
   const onSubmit: SubmitHandler<PopupInputProps> = (data) => {
     const standardizedPhone = standardizePhoneNumber(data.userTel);
+    const arrayId = [Number(id)];
 
+    dispatch(sendOrderCameraAction({camerasIds: arrayId, tel: standardizedPhone }));
     onClose();
-    return standardizedPhone;
   };
 
   return (
