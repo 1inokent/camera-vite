@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { fetchCamerasAction } from '../../store/slices/cameras-slice';
-import { clearError, setError } from '../../store/slices/error-slice';
+import { fetchCamerasAction } from '../../store/slices/cameras-slice/cameras-slice';
+import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';

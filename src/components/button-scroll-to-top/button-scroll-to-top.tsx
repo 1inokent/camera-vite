@@ -1,4 +1,4 @@
-import { smoothScrollToTop } from '../../utils';
+import { smoothScrollToTop } from '../../utils/utils';
 
 function ButtonScrollToTop():JSX.Element {
   return (

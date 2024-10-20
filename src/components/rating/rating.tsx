@@ -23,7 +23,7 @@ function Rating({rating, reviewCount, maxRating = 5}: RatingProps): JSX.Element 
         </svg>
       ))}
 
-      <p className="visually-hidden">Рейтинг:{rating}</p>
+      <p className="visually-hidden" role="rating">Рейтинг:{rating}</p>
       <p className="rate__count">
         <span className="visually-hidden">Всего оценок:</span>
         {reviewCount}

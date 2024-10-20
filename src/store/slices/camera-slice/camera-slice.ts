@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Camera } from '../../types/cameras-types/cameras-types';
+import { Camera } from '../../../types/cameras-types/cameras-types';
 import { AxiosError, AxiosInstance } from 'axios';
-import { ApiRout } from '../../const';
-import { clearError, setError } from './error-slice';
-import { OrdersCamera } from '../../types/send-data-types/orders-type';
+import { ApiRout } from '../../../const';
+import { clearError, setError } from '../error-slice/error-slice';
+import { OrdersCamera } from '../../../types/send-data-types/orders-type';
 
-interface CameraState {
+export interface CameraState {
   camera: Camera | null;
   isLoading: boolean;
   orderStatus: 'idle' | 'loading' | 'succeeded' | 'failed';

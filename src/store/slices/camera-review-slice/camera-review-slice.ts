@@ -1,34 +1,33 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Cameras } from '../../types/cameras-types/cameras-types';
+import { CameraReviews } from '../../../types/camera-review-types/camera-review-types';
 import { AxiosError, AxiosInstance } from 'axios';
-import { ApiRout } from '../../const';
-import { clearError, setError } from './error-slice';
+import { ApiRout } from '../../../const';
+import { clearError, setError } from '../error-slice/error-slice';
 
-interface CamerasSimilarState {
-  camerasSimilar: Cameras;
+export interface CameraReviewState {
+  reviews: CameraReviews;
   isLoading: boolean;
 }
 
-const initialState: CamerasSimilarState = {
-  camerasSimilar: [],
+const initialState: CameraReviewState = {
+  reviews: [],
   isLoading: false,
 };
 
-export const fetchCamerasSimilarAction = createAsyncThunk<
-  Cameras,
+export const fetchCameraReviewAction = createAsyncThunk<
+  CameraReviews,
   { signal: AbortSignal; id: string },
   { extra: AxiosInstance; rejectValue: string }
 >(
-  'product/fetchCamerasSimilar',
+  'product/fetchCameraReview',
   async ({ signal, id }, { extra: api, dispatch, rejectWithValue }) => {
     dispatch(clearError());
     try {
-      const { data } = await api.get<Cameras>(
-        `${ApiRout.Cameras}/${id}${ApiRout.Similar}`,
-        {
-          signal,
-        }
+      const { data } = await api.get<CameraReviews>(
+        `${ApiRout.Cameras}/${id}${ApiRout.Review}`,
+        { signal }
       );
+
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -44,23 +43,23 @@ export const fetchCamerasSimilarAction = createAsyncThunk<
   }
 );
 
-const camerasSimilarSlice = createSlice({
-  name: 'camerasSimilar',
+const cameraReviewSlice = createSlice({
+  name: 'cameraReview',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCamerasSimilarAction.pending, (state) => {
+      .addCase(fetchCameraReviewAction.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchCamerasSimilarAction.fulfilled, (state, action) => {
-        state.camerasSimilar = action.payload;
+      .addCase(fetchCameraReviewAction.fulfilled, (state, action) => {
+        state.reviews = action.payload;
         state.isLoading = false;
       })
-      .addCase(fetchCamerasSimilarAction.rejected, (state) => {
+      .addCase(fetchCameraReviewAction.rejected, (state) => {
         state.isLoading = false;
       });
   },
 });
 
-export default camerasSimilarSlice.reducer;
+export default cameraReviewSlice.reducer;

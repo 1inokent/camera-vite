@@ -1,19 +1,21 @@
 const formattedPrice = (price: number) => price.toLocaleString('ru-RU');
 
 const standardizePhoneNumber = (phone: string) => {
-  let digits = phone.replace(/\D/g, '');
-  if (digits.startsWith('8')) {
-    digits = `7${digits.slice(1)}`;
-  }
+  const digits = phone.replace(/\D/g, '');
+
   return `+${digits}`;
 };
 
 const splitDescription = (description: string) => {
-  const sentences = description.split('. ').filter(Boolean);
-  const firstSentence =
-    sentences.slice(0, 1).join('.') + (sentences.length > 1 ? '.' : '');
+  const trimmedDescription = description.endsWith('.')
+    ? description.slice(0, -1)
+    : description;
+
+  const sentences = trimmedDescription.split('. ').filter(Boolean);
+
+  const firstSentence = sentences.length > 0 ? `${sentences[0]}.` : '';
   const remainingDescription =
-    sentences.slice(1).join('. ') + (sentences.length > 1 ? '.' : '');
+    sentences.length > 1 ? `${sentences.slice(1).join('. ')}.` : '';
 
   return { firstSentence, remainingDescription };
 };

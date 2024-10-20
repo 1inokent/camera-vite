@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { fetchCameraAction } from '../../store/slices/camera-slice';
-import { clearError, setError } from '../../store/slices/error-slice';
+import { fetchCameraAction } from '../../store/slices/camera-slice/camera-slice';
+import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 
 import Rating from '../../components/rating/rating';
 import Footer from '../../components/footer/footer';
@@ -14,7 +14,7 @@ import ProductReviews from '../../components/product-reviews/product-reviews';
 import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
 
 import { AppRoute } from '../../const';
-import { formattedPrice } from '../../utils';
+import { formattedPrice } from '../../utils/utils';
 import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 function ProductPage(): JSX.Element {

@@ -1,17 +1,15 @@
 import { useEffect } from 'react';
-import { generatePath, Link } from 'react-router-dom';
 
-import { clearError, setError } from '../../store/slices/error-slice';
+import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { fetchCamerasPromoAction } from '../../store/slices/cameras-promo-slice';
+import { fetchCamerasPromoAction } from '../../store/slices/camera-promo-slice/cameras-promo-slice';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/bundle';
 
-import { AppRoute } from '../../const';
-import { getBannerText } from '../../utils';
+import BannerSlider from './banner-slider';
 
 function Banner(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -26,11 +24,11 @@ function Banner(): JSX.Element {
         : ' width: 16px; height: 16px; opacity: 1;';
 
       return `<span
-        class="${className}"
-        style="${bulletStyle}
-        --swiper-pagination-bullet-inactive-color: #F4F4FC;"
-        data-index="${index}">
-        </span>`;
+          class="${className}"
+          style="${bulletStyle}
+          --swiper-pagination-bullet-inactive-color: #F4F4FC;"
+          data-index="${index}">
+          </span>`;
     },
     el: '.swiper-pagination',
   };
@@ -62,7 +60,7 @@ function Banner(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <div className='banner' style={{ minHeight: 'auto'}}>
+    <div className='banner' style={{ minHeight: 'auto', position: 'relative', width: '100%'}}>
       {
         camerasPromo && camerasPromo.length > 0 && (
           <Swiper
@@ -76,30 +74,7 @@ function Banner(): JSX.Element {
             {
               camerasPromo.map((camera, index) => (
                 <SwiperSlide key={camera.id}>
-                  <picture>
-                    <source
-                      type="image/webp"
-                      srcSet={`${camera.previewImgWebp}, ${camera.previewImg2x}`}
-                    />
-                    <img
-                      src={`/${camera.previewImg}`}
-                      srcSet={`/${camera.previewImg2x}`}
-                      width="1280"
-                      height="280"
-                      alt="баннер"
-                    />
-                  </picture>
-                  <p className="banner__info">
-                    <span className="banner__message">Новинка!</span>
-                    <span className="title title--h1">{camera.name}</span>
-                    <span className="banner__text">{getBannerText(index)}</span>
-                    <Link
-                      className="btn"
-                      to={generatePath(AppRoute.ProductPage, {id: camera.id.toString()})}
-                    >
-                      Подробнее
-                    </Link>
-                  </p>
+                  <BannerSlider camera={camera} index={index} key={camera.id} />
                 </SwiperSlide>
               ))
             }
@@ -107,10 +82,12 @@ function Banner(): JSX.Element {
               className="swiper-pagination"
               style={{
                 position: 'absolute',
-                bottom: '10px',
-                left: '1300px',
+                bottom: '15px',
+                marginRight: '50px',
+                left: '89%',
                 display: 'flex',
                 gap: '8px',
+                zIndex: 10,
               }}
             />
           </Swiper>
