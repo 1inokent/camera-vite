@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { fetchCameraAction } from '../../store/slices/camera-slice';
-import { clearError, setError } from '../../store/slices/error-slice';
+import { fetchCameraAction } from '../../store/slices/camera-slice/camera-slice';
+import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 
 import Rating from '../../components/rating/rating';
 import Footer from '../../components/footer/footer';
@@ -14,8 +14,8 @@ import ProductReviews from '../../components/product-reviews/product-reviews';
 import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
 
 import { AppRoute } from '../../const';
-import { formattedPrice } from '../../utils';
-import ProductSimilar from '../../components/products-similar/products-similar';
+import { formattedPrice } from '../../utils/utils';
+import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -55,10 +55,12 @@ function ProductPage(): JSX.Element {
 
   if (errorMessage && !camera) {
     return (
-      <Link to={AppRoute.CatalogPage}>
+      <>
         <h2>{errorMessage}</h2>
-        <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
-      </Link>
+        <Link to={AppRoute.CatalogPage}>
+          <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
+        </Link>
+      </>
     );
   }
 
@@ -102,7 +104,7 @@ function ProductPage(): JSX.Element {
                   <picture>
                     <source
                       type="image/webp"
-                      srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`}
+                      srcSet={`/${previewImgWebp}, /${previewImgWebp2x}`}
                     />
                     <img
                       src={`/${previewImg}`}
@@ -122,6 +124,12 @@ function ProductPage(): JSX.Element {
                     {formattedPrice(price)} ₽
                   </p>
 
+                  <button className="btn btn--purple" type="button">
+                    <svg width="24" height="16" aria-hidden="true">
+                      <use xlinkHref="#icon-add-basket"></use>
+                    </svg>Добавить в корзину
+                  </button>
+
                   <ProductTabsMemonizated
                     category={category}
                     description={description}
@@ -135,7 +143,7 @@ function ProductPage(): JSX.Element {
             </section>
           </div>
 
-          <ProductSimilar />
+          <ProductSimilarSlider />
           <ProductReviews />
 
         </div>

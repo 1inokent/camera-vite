@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Cameras } from '../../types/cameras-types/cameras-types';
+import { Cameras } from '../../../types/cameras-types/cameras-types';
 import { AxiosError, AxiosInstance } from 'axios';
-import { ApiRout } from '../../const';
-import { clearError, setError } from './error-slice';
+import { ApiRout } from '../../../const';
+import { clearError, setError } from '../error-slice/error-slice';
 
-interface CamerasState {
+export interface CamerasState {
   cameras: Cameras;
   isLoading: boolean;
 }

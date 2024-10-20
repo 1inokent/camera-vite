@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react';
-import { splitDescription } from '../../utils';
+import { splitDescription } from '../../utils/utils';
 
 type ProductTabsProps = {
   vendorCode: string;

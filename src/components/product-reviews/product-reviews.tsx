@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom';
 import debounce from 'lodash/debounce';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { fetchCameraReviewAction } from '../../store/slices/camera-review-slice';
-import { setError } from '../../store/slices/error-slice';
+import { fetchCameraReviewAction } from '../../store/slices/camera-review-slice/camera-review-slice';
+import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 
 import ProductReviewsList from './product-reviews-list';
 import ButtonScrollToTop from '../button-scroll-to-top/button-scroll-to-top';
@@ -35,6 +35,7 @@ function ProductReviews(): JSX.Element {
       try {
         if (isMounted) {
           if (id) {
+            dispatch(clearError());
             await dispatch(fetchCameraReviewAction({ signal: abortController.signal, id }));
           }
         }
@@ -89,7 +90,7 @@ function ProductReviews(): JSX.Element {
             </button>
           </div>
 
-          {sortedReviews.length === 0 ? ( // Проверка на наличие отзывов
+          {sortedReviews.length === 0 ? (
             <p>Нет отзывов</p>
           ) : (
             <>
@@ -99,6 +100,7 @@ function ProductReviews(): JSX.Element {
                 {displayedReviewsCount < sortedReviews.length && !isLoading && (
                   <button
                     className="btn btn--purple"
+                    role='loadButton'
                     type="button"
                     onClick={handleShowMoreReviews}
                   >
@@ -108,7 +110,7 @@ function ProductReviews(): JSX.Element {
               </div>
 
               {isLoading && (
-                <button className="btn btn--purple" type="button" disabled>
+                <button className="btn btn--purple" type="button" disabled role='loadButton'>
                   Загрузка...
                 </button>
               )}

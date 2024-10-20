@@ -1,5 +1,5 @@
 import { CameraReview } from '../../types/camera-review-types/camera-review-types';
-import { formatDate } from '../../utils';
+import { formatDate } from '../../utils/utils';
 import Rating from '../rating/rating';
 
 type ProductReviewProps = {

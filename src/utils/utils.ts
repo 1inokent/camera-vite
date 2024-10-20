@@ -1,19 +1,21 @@
 const formattedPrice = (price: number) => price.toLocaleString('ru-RU');
 
 const standardizePhoneNumber = (phone: string) => {
-  let digits = phone.replace(/\D/g, '');
-  if (digits.startsWith('8')) {
-    digits = `7${digits.slice(1)}`;
-  }
+  const digits = phone.replace(/\D/g, '');
+
   return `+${digits}`;
 };
 
 const splitDescription = (description: string) => {
-  const sentences = description.split('. ').filter(Boolean);
-  const firstSentence =
-    sentences.slice(0, 1).join('.') + (sentences.length > 1 ? '.' : '');
+  const trimmedDescription = description.endsWith('.')
+    ? description.slice(0, -1)
+    : description;
+
+  const sentences = trimmedDescription.split('. ').filter(Boolean);
+
+  const firstSentence = sentences.length > 0 ? `${sentences[0]}.` : '';
   const remainingDescription =
-    sentences.slice(1).join('. ') + (sentences.length > 1 ? '.' : '');
+    sentences.length > 1 ? `${sentences.slice(1).join('. ')}.` : '';
 
   return { firstSentence, remainingDescription };
 };
@@ -45,10 +47,24 @@ const smoothScrollToTop = () => {
   requestAnimationFrame(step);
 };
 
+const getBannerText = (index: number) => {
+  switch (index) {
+    case 0:
+      return 'Профессиональная камера от известного производителя';
+    case 1:
+      return 'Для истинных ценителей и коллекционеров';
+    case 2:
+      return 'Маленькое чудо фотографии';
+    default:
+      return 'Профессиональная камера от известного производителя';
+  }
+};
+
 export {
   formattedPrice,
   standardizePhoneNumber,
   splitDescription,
   formatDate,
   smoothScrollToTop,
+  getBannerText,
 };

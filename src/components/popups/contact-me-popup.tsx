@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
 
-import { formattedPrice, standardizePhoneNumber } from '../../utils';
+import { formattedPrice, standardizePhoneNumber } from '../../utils/utils';
 
 import { Camera } from '../../types/cameras-types/cameras-types';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { PHONE_REGULAR_EXPRESSION } from '../../const';
 import { useHookFormMask } from 'use-mask-input';
+import { useAppDispatch } from '../../store/hook';
+import { sendOrderCameraAction } from '../../store/slices/camera-slice/camera-slice';
 
 type ContactMePopupProps = {
   content: Camera;
@@ -17,6 +19,7 @@ type PopupInputProps = {
 }
 
 function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
+  const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
 
   const {register, setFocus, handleSubmit, formState: { errors }} = useForm<PopupInputProps>();
@@ -87,15 +90,16 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
 
   const onSubmit: SubmitHandler<PopupInputProps> = (data) => {
     const standardizedPhone = standardizePhoneNumber(data.userTel);
+    const arrayId = [Number(id)];
 
+    dispatch(sendOrderCameraAction({camerasIds: arrayId, tel: standardizedPhone }));
     onClose();
-    return standardizedPhone;
   };
 
   return (
     <div className="modal is-active" ref={modalRef}>
-      <div className="modal__wrapper">
-        <div className="modal__overlay" onClick={onClose}></div>
+      <div className="modal__wrapper" role='popupName'>
+        <div className="modal__overlay" onClick={onClose} role="presentation"></div>
         <div className="modal__content">
           <p className="title title--h4">Свяжитесь со мной</p>
 
@@ -119,7 +123,7 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
               </p>
               <ul className="basket-item__list">
                 <li className="basket-item__list-item">
-                  <span className="basket-item__article">Артикул:</span>
+                  <span className="basket-item__article">Артикул: </span>
                   <span className="basket-item__number">{vendorCode}</span>
                 </li>
                 <li className="basket-item__list-item">{type} {category}</li>
