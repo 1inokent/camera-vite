@@ -131,10 +131,20 @@ const mockCameras: Cameras = [
   },
 ];
 
+const mockProduct = {
+  vendorCode: '12345',
+  category: 'Cameras',
+  type: 'DSLR',
+  level: 'Professional',
+  description:
+    'This is a high-end DSLR camera. It comes with a variety of features and accessories.',
+};
+
 export {
   mockCamera,
   mockCameraReviews,
   mockCamerasPromo,
   mockCamerasSimilar,
   mockCameras,
+  mockProduct,
 };

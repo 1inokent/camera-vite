@@ -44,7 +44,7 @@ function ProductSimilarSlider(): JSX.Element | null {
   return (
     <div className="page-content__section">
       <section className="product-similar">
-        <div className="container">
+        <div className="container" role='similarTitle'>
           <h2 className="title title--h3">Похожие товары</h2>
 
           <div className="product-similar__slider">
