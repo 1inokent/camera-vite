@@ -100,7 +100,6 @@ function ProductReviews(): JSX.Element {
                 {displayedReviewsCount < sortedReviews.length && !isLoading && (
                   <button
                     className="btn btn--purple"
-                    role='loadButton'
                     type="button"
                     onClick={handleShowMoreReviews}
                   >
