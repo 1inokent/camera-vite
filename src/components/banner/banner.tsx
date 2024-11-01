@@ -35,16 +35,13 @@ function Banner(): JSX.Element {
 
   useEffect(() => {
     const abortController = new AbortController();
-    let isMounted = true;
 
     const fetchData = async () => {
       try {
-        if (isMounted) {
-          dispatch(clearError());
-          await dispatch(fetchCamerasPromoAction({ signal: abortController.signal }));
-        }
+        dispatch(clearError());
+        await dispatch(fetchCamerasPromoAction({ signal: abortController.signal }));
       } catch (err) {
-        if (isMounted && !(err === 'Запрос был отменён')) {
+        if (!(err === 'Запрос был отменён')) {
           const errMessage = typeof err === 'string' ? err : 'Ошибка загрузки камер';
           dispatch(setError(errMessage));
         }
@@ -54,7 +51,6 @@ function Banner(): JSX.Element {
     fetchData();
 
     return () => {
-      isMounted = false;
       abortController.abort();
     };
   }, [dispatch]);

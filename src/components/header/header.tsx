@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import FormSearch from '../form-search/form-search';
 
 function Header(): JSX.Element {
   return (
@@ -26,6 +27,8 @@ function Header(): JSX.Element {
             </li>
           </ul>
         </nav>
+
+        <FormSearch />
       </div>
     </header>
   );

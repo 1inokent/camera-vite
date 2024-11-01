@@ -29,27 +29,21 @@ function ProductReviews(): JSX.Element {
 
   useEffect(() => {
     const abortController = new AbortController();
-    let isMounted = true;
 
     const fetchData = async () => {
       try {
-        if (isMounted) {
-          if (id) {
-            dispatch(clearError());
-            await dispatch(fetchCameraReviewAction({ signal: abortController.signal, id }));
-          }
+        if (id) {
+          dispatch(clearError());
+          await dispatch(fetchCameraReviewAction({ signal: abortController.signal, id }));
         }
       } catch (err) {
-        if (isMounted) {
-          const errMessage = err instanceof Error ? err.message : 'Нет данных для отзывов';
-          dispatch(setError(errMessage));
-        }
+        const errMessage = err instanceof Error ? err.message : 'Нет данных для отзывов';
+        dispatch(setError(errMessage));
       }
     };
     fetchData();
 
     return () => {
-      isMounted = false;
       abortController.abort();
     };
 

@@ -155,7 +155,7 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
                     required: 'Нужно указать номер',
                     pattern: {
                       value: PHONE_REGULAR_EXPRESSION,
-                      message: 'Введите телефон в формате +7(9XX)XXX-XX-XX',
+                      message: 'Телефон в формате +7(9XX)XXX-XX-XX',
                     }
                   })}
                 />

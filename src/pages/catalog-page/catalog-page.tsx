@@ -1,8 +1,5 @@
-import { useEffect } from 'react';
+import { useAppSelector } from '../../store/hook';
 
-import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { fetchCamerasAction } from '../../store/slices/cameras-slice/cameras-slice';
-import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
@@ -14,35 +11,8 @@ import { Link } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 
 function CatalogPage(): JSX.Element {
-  const dispatch = useAppDispatch();
   const { cameras, isLoading } = useAppSelector((state) => state.cameras);
   const errorMessage = useAppSelector((state) => state.error.message);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    let isMounted = true;
-    const fetchData = async () => {
-      try {
-        if (isMounted) {
-          dispatch(clearError());
-          await dispatch(fetchCamerasAction({ signal: abortController.signal }));
-        }
-      } catch (err) {
-        if (isMounted && !(err === 'Запрос был отменён')) {
-          const errMessage = typeof err === 'string' ? err : 'Ошибка загрузки камер';
-          dispatch(setError(errMessage));
-        }
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      isMounted = false;
-      abortController.abort();
-    };
-
-  }, [dispatch]);
 
   if (isLoading) {
     return <SpinnerLoader />;
