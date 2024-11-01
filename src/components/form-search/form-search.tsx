@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
 
 import { useAppSelector } from '../../store/hook';
@@ -10,28 +10,65 @@ import { normalizeText } from '../../utils/utils';
 function FormSearch(): JSX.Element {
   const products = useAppSelector((state) => state.cameras.cameras);
   const navigate = useNavigate();
+  const listRef = useRef<HTMLUListElement | null>(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Cameras>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  useEffect(() => {
+    const handleClickOutside = (evt: MouseEvent) => {
+      const target = evt.target as HTMLElement;
+      if (!target.closest('.form-search')) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (listRef.current && selectedIndex >= 0) {
+      const selectedItem = listRef.current.children[selectedIndex] as HTMLElement;
+
+      if (selectedItem) {
+        selectedItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [selectedIndex, showDropdown]);
+
+  const updateFilteredProducts = (query: string) => {
+    const normalizedQuery = normalizeText(query);
+    const result = products.filter((product) =>
+      normalizeText(product.name).includes(normalizedQuery)
+    );
+
+    setFilteredProducts(result);
+    setShowDropdown(result.length > 0);
+    setSelectedIndex(-1);
+  };
+
+  const resetSearch = () => {
+    setFilteredProducts([]);
+    setShowDropdown(false);
+    setSelectedIndex(-1);
+  };
 
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const query = evt.target.value;
     setSearchTerm(query);
 
     if (query.length >= 3) {
-      const normalizedQuery = normalizeText(query);
-
-      const result = products
-        .filter((product) => normalizeText(product.name).includes(normalizedQuery));
-
-      setFilteredProducts(result);
-      setShowDropdown(true);
+      updateFilteredProducts(query);
     } else {
-      setFilteredProducts([]);
-      setShowDropdown(false);
+      resetSearch();
     }
   };
+
 
   const handleProductSelect = (productId: number) => {
     const path = generatePath(AppRoute.ProductPage, { id: productId.toString() });
@@ -40,14 +77,59 @@ function FormSearch(): JSX.Element {
 
   const handleSearchReset = () => {
     setSearchTerm('');
-    setFilteredProducts([]);
-    setShowDropdown(false);
+    resetSearch();
   };
+
+  const handleKeyDown = (evt: React.KeyboardEvent<HTMLElement>) => {
+    if (showDropdown && filteredProducts.length > 0) {
+      switch (evt.key) {
+        case 'ArrowDown':
+          evt.preventDefault();
+          setSelectedIndex((prevIndex) => (prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : 0));
+          break;
+        case 'ArrowUp':
+          evt.preventDefault();
+          setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : filteredProducts.length - 1));
+          break;
+        case 'Tab':
+          if (selectedIndex >= 0) {
+            evt.preventDefault();
+            setSelectedIndex((prevIndex) => (prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : 0));
+          }
+          break;
+        case 'Enter':
+          if (selectedIndex >= 0) {
+            evt.preventDefault();
+            handleProductSelect(filteredProducts[selectedIndex].id);
+          }
+          break;
+        case 'Escape':
+          setShowDropdown(false);
+          break;
+      }
+    }
+  };
+
+  const renderDropdownItems = () => filteredProducts.map((product, index) => (
+    <li
+      key={product.id}
+      className="form-search__select-item"
+      style={{
+        backgroundColor: selectedIndex === index ? '#7575e2' : '',
+        color: selectedIndex === index ? '#fff' : '#333333',
+      }}
+      tabIndex={0}
+      onClick={() => handleProductSelect(product.id)}
+      onFocus={() => setSelectedIndex(index)}
+    >
+      {product.name}
+    </li>
+  ));
 
   return (
     <>
       <div className="form-search">
-        <form>
+        <form onKeyDown={handleKeyDown}>
 
           <label>
             <svg className="form-search__icon" width="16" height="16" aria-hidden="true">
@@ -58,8 +140,9 @@ function FormSearch(): JSX.Element {
               type="text"
               autoComplete="off"
               placeholder="Поиск по сайту"
-              onChange={handleInputChange}
               value={searchTerm}
+              onChange={handleInputChange}
+
             />
           </label>
 
@@ -71,21 +154,9 @@ function FormSearch(): JSX.Element {
                   visibility: showDropdown && filteredProducts.length > 0 ? 'visible' : 'hidden',
                   opacity: 1
                 }}
+                ref={listRef}
               >
-                {
-                  filteredProducts.map(
-                    (product, index) => (
-                      <li
-                        className="form-search__select-item"
-                        tabIndex={index}
-                        key={product.id}
-                        onClick={() => handleProductSelect(product.id)}
-                      >
-                        {product.name}
-                      </li>
-                    )
-                  )
-                }
+                {renderDropdownItems()}
               </ul>
           }
 
