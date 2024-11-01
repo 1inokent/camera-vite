@@ -34,12 +34,9 @@ function FormSearch(): JSX.Element {
   useEffect(() => {
     if (listRef.current && selectedIndex >= 0) {
       const selectedItem = listRef.current.children[selectedIndex] as HTMLElement;
-
-      if (selectedItem) {
-        selectedItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      }
+      selectedItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
-  }, [selectedIndex, showDropdown]);
+  }, [selectedIndex]);
 
   const updateFilteredProducts = (query: string) => {
     const normalizedQuery = normalizeText(query);
@@ -81,32 +78,34 @@ function FormSearch(): JSX.Element {
   };
 
   const handleKeyDown = (evt: React.KeyboardEvent<HTMLElement>) => {
-    if (showDropdown && filteredProducts.length > 0) {
-      switch (evt.key) {
-        case 'ArrowDown':
+    if (!showDropdown || filteredProducts.length === 0) {
+      return;
+    }
+
+    switch (evt.key) {
+      case 'ArrowDown':
+        evt.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : prevIndex));
+        break;
+      case 'ArrowUp':
+        evt.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
+        break;
+      case 'Tab':
+        evt.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : prevIndex));
+        break;
+      case 'Enter':
+        if (selectedIndex >= 0) {
           evt.preventDefault();
-          setSelectedIndex((prevIndex) => (prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : 0));
-          break;
-        case 'ArrowUp':
-          evt.preventDefault();
-          setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : filteredProducts.length - 1));
-          break;
-        case 'Tab':
-          if (selectedIndex >= 0) {
-            evt.preventDefault();
-            setSelectedIndex((prevIndex) => (prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : 0));
-          }
-          break;
-        case 'Enter':
-          if (selectedIndex >= 0) {
-            evt.preventDefault();
-            handleProductSelect(filteredProducts[selectedIndex].id);
-          }
-          break;
-        case 'Escape':
-          setShowDropdown(false);
-          break;
-      }
+          handleProductSelect(filteredProducts[selectedIndex].id);
+        }
+        break;
+      case 'Escape':
+        resetSearch();
+        setShowDropdown(false);
+        setSearchTerm('');
+        break;
     }
   };
 
@@ -142,7 +141,6 @@ function FormSearch(): JSX.Element {
               placeholder="Поиск по сайту"
               value={searchTerm}
               onChange={handleInputChange}
-
             />
           </label>
 
