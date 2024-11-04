@@ -1,18 +1,30 @@
 import { useAppSelector } from '../../store/hook';
-
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import CameraList from '../../components/cameras-components/cameras-list';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
-import { AppRoute } from '../../const';
-import { Link } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
+import CatalogSort from '../../components/catalog-sort/catalog-sort';
+
+import { AppRoute } from '../../const';
+import { sortingCameras } from '../../utils/sorting-filtering-utils';
+
 
 function CatalogPage(): JSX.Element {
   const { cameras, isLoading } = useAppSelector((state) => state.cameras);
   const errorMessage = useAppSelector((state) => state.error.message);
+
+  const [sortType, setSortType] = useState<'price' | 'rating'>('price');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const handleSortTypeChange = (type: 'price' | 'rating') => setSortType(type);
+  const handleSortOrderChange = (order: 'asc' | 'desc') => setSortOrder(order);
+
+  const sortedCameras = sortingCameras(cameras, sortType, sortOrder);
 
   if (isLoading) {
     return <SpinnerLoader />;
@@ -59,7 +71,13 @@ function CatalogPage(): JSX.Element {
                 </div>
 
                 <div className="catalog__content">
-                  <CameraList cameras={cameras} />
+                  <CatalogSort
+                    sortType={sortType}
+                    sortOrder={sortOrder}
+                    onSortTypeChange={handleSortTypeChange}
+                    onSortOrderChange={handleSortOrderChange}
+                  />
+                  <CameraList cameras={sortedCameras} />
                 </div>
 
               </div>
