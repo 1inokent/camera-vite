@@ -9,9 +9,11 @@ import CameraList from '../../components/cameras-components/cameras-list';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Banner from '../../components/banner/banner';
 import CatalogSort from '../../components/catalog-sort/catalog-sort';
+import CatalogFilter from '../../components/catalog-filter/catalog-filter';
 
 import { AppRoute } from '../../const';
-import { sortingCameras } from '../../utils/sorting-filtering-utils';
+import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
+import { Filters } from '../../types/filters-types/filter-types';
 
 
 function CatalogPage(): JSX.Element {
@@ -21,10 +23,20 @@ function CatalogPage(): JSX.Element {
   const [sortType, setSortType] = useState<'price' | 'rating'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const handleSortTypeChange = (type: 'price' | 'rating') => setSortType(type);
-  const handleSortOrderChange = (order: 'asc' | 'desc') => setSortOrder(order);
+  const [filters, setFilters] = useState<Filters>({});
 
-  const sortedCameras = sortingCameras(cameras, sortType, sortOrder);
+  const handleFilterChange = (newFilters: Filters) => {
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const filteredCameras = cameras ? filterCamerasByParams(cameras, filters) : [];
+  const sortedCameras = filteredCameras ? sortingCameras(filteredCameras, sortType, sortOrder) : [];
+  const minPrice = sortedCameras.length > 0 ?
+    sortedCameras.reduce((min, camera) => (camera.price < min ? camera.price : min), sortedCameras[0].price)
+    : 0;
+  const maxPrice = sortedCameras.length > 0 ?
+    sortedCameras.reduce((max, camera) => (camera.price > max ? camera.price : max), sortedCameras[0].price)
+    : 0;
 
   if (isLoading) {
     return <SpinnerLoader />;
@@ -67,15 +79,19 @@ function CatalogPage(): JSX.Element {
               <h1 className="title title--h2">Каталог фото - и видеотехники</h1>
               <div className="page-content__columns">
                 <div className="catalog__aside">
-                  <img src="/img/banner.png" />
+                  <CatalogFilter
+                    maxPrice={maxPrice}
+                    minPrice={minPrice}
+                    onFilterChange={handleFilterChange}
+                  />
                 </div>
 
                 <div className="catalog__content">
                   <CatalogSort
                     sortType={sortType}
                     sortOrder={sortOrder}
-                    onSortTypeChange={handleSortTypeChange}
-                    onSortOrderChange={handleSortOrderChange}
+                    onSortTypeChange={setSortType}
+                    onSortOrderChange={setSortOrder}
                   />
                   <CameraList cameras={sortedCameras} />
                 </div>
