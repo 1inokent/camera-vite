@@ -31,6 +31,7 @@ function CatalogPage(): JSX.Element {
 
   const filteredCameras = cameras ? filterCamerasByParams(cameras, filters) : [];
   const sortedCameras = filteredCameras ? sortingCameras(filteredCameras, sortType, sortOrder) : [];
+
   const minPrice = sortedCameras.length > 0 ?
     sortedCameras.reduce((min, camera) => (camera.price < min ? camera.price : min), sortedCameras[0].price)
     : 0;
