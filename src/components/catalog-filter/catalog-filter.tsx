@@ -24,6 +24,7 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
       cameraType: cameraType.length > 0 ? cameraType : undefined,
       level: cameraLevel.length > 0 ? cameraLevel : undefined,
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cameraLevel, cameraType, category, priceFrom, priceTo]);
 
   const handlePriceFromChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
