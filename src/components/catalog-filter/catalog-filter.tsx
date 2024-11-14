@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Filters } from '../../types/filters-types/filter-types';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
 
@@ -9,30 +9,31 @@ type CatalogFilterProps = {
 }
 
 function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProps): JSX.Element {
-  const [priceFrom, setPriceFrom] = useState<string | number>('');
-  const [priceTo, setPriceTo] = useState<string | number>('');
+  const [priceFrom, setPriceFrom] = useState<string | number>(minPrice || '');
+  const [priceTo, setPriceTo] = useState<string | number>(maxPrice || '');
   const [category, setCategory] = useState<CameraCategory | ''>('');
+  const [categoryChecked, setCategoryChecked] = useState<boolean>(false);
   const [cameraType, setCameraType] = useState<string[]>([]);
   const [cameraLevel, setCameraLevel] = useState<string[]>([]);
 
+  useEffect(() => {
+    onFilterChange({
+      minPrice: priceFrom ? Number(priceFrom) : undefined,
+      maxPrice: priceTo ? Number(priceTo) : undefined,
+      category: category || undefined,
+      cameraType: cameraType.length > 0 ? cameraType : undefined,
+      level: cameraLevel.length > 0 ? cameraLevel : undefined,
+    });
+  }, [cameraLevel, cameraType, category, priceFrom, priceTo]);
+
   const handlePriceFromChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value;
-
     setPriceFrom(value);
-    onFilterChange({
-      minPrice: value ? Number(value) : undefined,
-      maxPrice: priceTo ? Number(priceTo) : undefined
-    });
   };
 
   const handlePriceToChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value;
-
     setPriceTo(value);
-    onFilterChange({
-      minPrice: priceFrom ? Number(priceFrom) : undefined,
-      maxPrice: value ? Number(value) : undefined
-    });
   };
 
   const handlePriceFromBlur = () => {
@@ -41,16 +42,8 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
     if (minPrice !== undefined && maxPrice !== undefined) {
       if (fromValue < minPrice || isNaN(fromValue)) {
         setPriceFrom(minPrice);
-        onFilterChange({
-          minPrice,
-          maxPrice: Number(priceTo),
-        });
       } else if (fromValue > maxPrice || fromValue > Number(priceTo)) {
-        setPriceFrom(Math.min(minPrice, Number(priceTo)));
-        onFilterChange({
-          minPrice: Math.min(minPrice, Number(priceTo)),
-          maxPrice: priceTo ? Number(priceTo) : undefined,
-        });
+        setPriceFrom(minPrice);
       }
     }
   };
@@ -68,33 +61,25 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
   };
 
   const handleCategoryChange = (newCategory: 'Видеокамера' | 'Фотоаппарат') => {
-    setCategory(newCategory);
-
-    const updatedTypes = newCategory === 'Видеокамера'
-      ? cameraType.filter((type) => type !== 'Моментальная' && type !== 'Плёночная')
-      : cameraType;
-
-    setCameraType(updatedTypes);
-    onFilterChange({
-      category: newCategory,
-      cameraType: updatedTypes,
-      minPrice: priceFrom ? Number(priceFrom) : undefined,
-      maxPrice: priceTo ? Number(priceTo) : undefined
-    });
+    if (category === newCategory && categoryChecked) {
+      setCategory('');
+      setCategoryChecked(false);
+      setCameraType([]);
+    } else {
+      setCategory(newCategory);
+      setCategoryChecked(true);
+      setCameraType(newCategory === 'Видеокамера'
+        ? cameraType.filter((type) => type !== 'Моментальная' && type !== 'Плёночная')
+        : cameraType);
+    }
   };
 
   const handleTypeChange = (type: string) => {
     const updatedTypes = cameraType.includes(type)
       ? cameraType.filter((t) => t !== type)
       : [...cameraType, type];
-
     setCameraType(updatedTypes);
-    onFilterChange({
-      category: category,
-      cameraType: updatedTypes,
-      minPrice: priceFrom ? Number(priceFrom) : undefined,
-      maxPrice: priceTo ? Number(priceTo) : undefined
-    });
+    // updateFilters();
   };
 
   const handleLevelChange = (level: string) => {
@@ -103,13 +88,6 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
       : [...cameraLevel, level];
 
     setCameraLevel(updatedLevels);
-    onFilterChange({
-      category,
-      cameraType,
-      level: updatedLevels,
-      minPrice: priceFrom ? Number(priceFrom) : undefined,
-      maxPrice: priceTo ? Number(priceTo) : undefined
-    });
   };
 
   const resetFilters = () => {

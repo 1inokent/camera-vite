@@ -15,13 +15,15 @@ const sortingCameras = (
 const filterCamerasByParams = (cameras: Cameras, filters: Filters): Cameras =>
   cameras.filter((camera) => {
     const isPriceValid =
-      (!filters.minPrice || camera.price >= filters.minPrice) &&
-      (!filters.maxPrice || camera.price <= filters.maxPrice);
+      (filters.minPrice === undefined || camera.price >= filters.minPrice) &&
+      (filters.maxPrice === undefined || camera.price <= filters.maxPrice);
     const isCategoryValid =
-      !filters.category || camera.category === filters.category;
+      filters.category === undefined || camera.category === filters.category;
     const isTypeValid =
-      !filters.cameraType || filters.cameraType.includes(camera.type);
-    const isLevelValid = !filters.level || filters.level.includes(camera.level);
+      filters.cameraType === undefined ||
+      filters.cameraType.includes(camera.type);
+    const isLevelValid =
+      filters.level === undefined || filters.level.includes(camera.level);
 
     return isPriceValid && isCategoryValid && isTypeValid && isLevelValid;
   });
