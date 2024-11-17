@@ -25,16 +25,14 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
       level: cameraLevel.length > 0 ? cameraLevel : undefined,
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraLevel, cameraType, category, priceFrom, priceTo]);
+  }, [cameraLevel, cameraType, category, priceFrom, priceTo, maxPrice, minPrice]);
 
   const handlePriceFromChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const value = evt.target.value;
-    setPriceFrom(value);
+    setPriceFrom(evt.target.value);
   };
 
   const handlePriceToChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const value = evt.target.value;
-    setPriceTo(value);
+    setPriceTo(evt.target.value);
   };
 
   const handlePriceFromBlur = () => {
@@ -53,9 +51,10 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
     const toValue = Number(priceTo);
 
     if (minPrice !== undefined && maxPrice !== undefined) {
-      if (toValue > maxPrice || isNaN(toValue)) {
+
+      if (toValue < minPrice || toValue < Number(priceFrom)) {
         setPriceTo(maxPrice);
-      } else if (toValue < minPrice || toValue < Number(priceFrom)) {
+      } else if (toValue > maxPrice || isNaN(toValue)) {
         setPriceTo(maxPrice);
       }
     }

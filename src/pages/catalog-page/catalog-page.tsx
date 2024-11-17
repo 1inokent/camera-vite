@@ -1,6 +1,6 @@
 import { useAppSelector } from '../../store/hook';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
@@ -15,7 +15,6 @@ import { AppRoute } from '../../const';
 import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
 import { Filters } from '../../types/filters-types/filter-types';
 
-
 function CatalogPage(): JSX.Element {
   const { cameras, isLoading } = useAppSelector((state) => state.cameras);
   const errorMessage = useAppSelector((state) => state.error.message);
@@ -24,20 +23,37 @@ function CatalogPage(): JSX.Element {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const [filters, setFilters] = useState<Filters>({});
+  const [currentMinPrice, setCurrentMinPrice] = useState<number | undefined>(undefined);
+  const [currentMaxPrice, setCurrentMaxPrice] = useState<number | undefined>(undefined);
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
-  const filteredCameras = cameras ? filterCamerasByParams(cameras, filters) : [];
-  const sortedCameras = filteredCameras ? sortingCameras(filteredCameras, sortType, sortOrder) : [];
+  const filteredCameras = useMemo(
+    () => (cameras ? filterCamerasByParams(cameras, filters) : []),
+    [cameras, filters]
+  );
+  const sortedCameras = useMemo(
+    () => (filteredCameras ? sortingCameras(filteredCameras, sortType, sortOrder) : []),
+    [filteredCameras, sortType, sortOrder]
+  );
 
   const minPrice = sortedCameras.length > 0 ?
     sortedCameras.reduce((min, camera) => (camera.price < min ? camera.price : min), sortedCameras[0].price)
-    : 0;
+    : currentMinPrice;
   const maxPrice = sortedCameras.length > 0 ?
     sortedCameras.reduce((max, camera) => (camera.price > max ? camera.price : max), sortedCameras[0].price)
-    : 0;
+    : currentMaxPrice;
+
+  useEffect(() => {
+    if (sortedCameras.length > 0) {
+      const newMinPrice = sortedCameras.reduce((min, camera) => (camera.price < min ? camera.price : min), sortedCameras[0].price);
+      const newMaxPrice = sortedCameras.reduce((max, camera) => (camera.price > max ? camera.price : max), sortedCameras[0].price);
+      setCurrentMinPrice(newMinPrice);
+      setCurrentMaxPrice(newMaxPrice);
+    }
+  }, [sortedCameras]);
 
   if (isLoading) {
     return <SpinnerLoader />;
