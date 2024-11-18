@@ -51,7 +51,6 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
     const toValue = Number(priceTo);
 
     if (minPrice !== undefined && maxPrice !== undefined) {
-
       if (toValue < minPrice || toValue < Number(priceFrom)) {
         setPriceTo(maxPrice);
       } else if (toValue > maxPrice || isNaN(toValue)) {

@@ -1,6 +1,6 @@
-import { useAppSelector } from '../../store/hook';
-import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../store/hook';
 
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
@@ -10,12 +10,15 @@ import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Banner from '../../components/banner/banner';
 import CatalogSort from '../../components/catalog-sort/catalog-sort';
 import CatalogFilter from '../../components/catalog-filter/catalog-filter';
+import Pagination from '../../components/pagination/pagination';
 
-import { AppRoute } from '../../const';
-import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
 import { Filters } from '../../types/filters-types/filter-types';
+import { AppRoute, ITEMS_PER_PAGE } from '../../const';
+import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
 
 function CatalogPage(): JSX.Element {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { cameras, isLoading } = useAppSelector((state) => state.cameras);
   const errorMessage = useAppSelector((state) => state.error.message);
 
@@ -25,6 +28,8 @@ function CatalogPage(): JSX.Element {
   const [filters, setFilters] = useState<Filters>({});
   const [currentMinPrice, setCurrentMinPrice] = useState<number | undefined>(undefined);
   const [currentMaxPrice, setCurrentMaxPrice] = useState<number | undefined>(undefined);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
@@ -54,6 +59,23 @@ function CatalogPage(): JSX.Element {
       setCurrentMaxPrice(newMaxPrice);
     }
   }, [sortedCameras]);
+
+  const totalPages = Math.ceil(sortedCameras.length / ITEMS_PER_PAGE);
+  const paginatedCameras = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return sortedCameras.slice(start, end);
+  }, [currentPage, sortedCameras]);
+
+  const handlePageChange = (page: number) => {
+    navigate(`?page=${page}`);
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const page = parseInt(params.get('page') || '1', 10);
+    setCurrentPage(page);
+  }, [location.search]);
 
   if (isLoading) {
     return <SpinnerLoader />;
@@ -110,7 +132,12 @@ function CatalogPage(): JSX.Element {
                     onSortTypeChange={setSortType}
                     onSortOrderChange={setSortOrder}
                   />
-                  <CameraList cameras={sortedCameras} />
+                  <CameraList cameras={paginatedCameras} />
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => handlePageChange(page)}
+                  />
                 </div>
 
               </div>
