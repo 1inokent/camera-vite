@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Camera } from '../../types/cameras-types/cameras-types';
+import { generatePath, Link } from 'react-router-dom';
+
 
 import Rating from '../rating/rating';
 import ContactMePopup from '../popups/contact-me-popup';
 
+import { Camera } from '../../types/cameras-types/cameras-types';
 import { formattedPrice } from '../../utils/utils';
-import { generatePath, Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 
 type CameraCardProps = {

@@ -15,6 +15,7 @@ import Pagination from '../../components/pagination/pagination';
 import { Filters } from '../../types/filters-types/filter-types';
 import { AppRoute, ITEMS_PER_PAGE } from '../../const';
 import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
+import { CameraCategory } from '../../types/cameras-types/cameras-types';
 
 function CatalogPage(): JSX.Element {
   const navigate = useNavigate();
@@ -24,16 +25,10 @@ function CatalogPage(): JSX.Element {
 
   const [sortType, setSortType] = useState<'price' | 'rating'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-
   const [filters, setFilters] = useState<Filters>({});
   const [currentMinPrice, setCurrentMinPrice] = useState<number | undefined>(undefined);
   const [currentMaxPrice, setCurrentMaxPrice] = useState<number | undefined>(undefined);
-
   const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const handleFilterChange = (newFilters: Filters) => {
-    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
-  };
 
   const filteredCameras = useMemo(
     () => (cameras ? filterCamerasByParams(cameras, filters) : []),
@@ -44,12 +39,55 @@ function CatalogPage(): JSX.Element {
     [filteredCameras, sortType, sortOrder]
   );
 
-  const minPrice = sortedCameras.length > 0 ?
-    sortedCameras.reduce((min, camera) => (camera.price < min ? camera.price : min), sortedCameras[0].price)
-    : currentMinPrice;
-  const maxPrice = sortedCameras.length > 0 ?
-    sortedCameras.reduce((max, camera) => (camera.price > max ? camera.price : max), sortedCameras[0].price)
-    : currentMaxPrice;
+  const totalPages = Math.ceil(sortedCameras.length / ITEMS_PER_PAGE);
+  const paginatedCameras = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return sortedCameras.slice(start, end);
+  }, [currentPage, sortedCameras]);
+
+  const updateQueryParams = (key: string, value: string | number | undefined) => {
+    const params = new URLSearchParams(location.search);
+
+    if (value !== undefined && value !== '') {
+      params.set(key, value.toString());
+    } else {
+      params.delete(key);
+    }
+
+    navigate(`?${params.toString()}`);
+  };
+
+  const handleFilterChange = (newFilters: Filters) => {
+    const params = new URLSearchParams(location.search);
+
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value.toString());
+      } else {
+        (
+          params.delete(key)
+        );
+      }
+    });
+
+    navigate(`?${params.toString()}`);
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handleSortTypeChange = (type: 'price' | 'rating') => {
+    updateQueryParams('sortType', type);
+    setSortType(type);
+  };
+  const handleSortOrderChange = (order: 'asc' | 'desc') => {
+    updateQueryParams('sortOrder', order);
+    setSortOrder(order);
+  };
+
+  const handlePageChange = (page: number) => {
+    updateQueryParams('page', page);
+    setCurrentPage(page);
+  };
 
   useEffect(() => {
     if (sortedCameras.length > 0) {
@@ -60,21 +98,33 @@ function CatalogPage(): JSX.Element {
     }
   }, [sortedCameras]);
 
-  const totalPages = Math.ceil(sortedCameras.length / ITEMS_PER_PAGE);
-  const paginatedCameras = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    return sortedCameras.slice(start, end);
-  }, [currentPage, sortedCameras]);
-
-  const handlePageChange = (page: number) => {
-    navigate(`?page=${page}`);
-  };
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const page = parseInt(params.get('page') || '1', 10);
-    setCurrentPage(page);
+    const sortTypeParam = params.get('sortType') as 'price' | 'rating';
+    const sortOrderParam = params.get('sortOrder') as 'asc' | 'desc';
+    const pageParam = parseInt(params.get('page') || '1', 10);
+    const filtersFromUrl = {} as Filters;
+
+    if (sortTypeParam) {
+      setSortType(sortTypeParam);
+    }
+    if (sortOrderParam) {
+      setSortOrder(sortOrderParam);
+    }
+    if (pageParam) {
+      setCurrentPage(pageParam);
+    }
+
+    params.forEach((value, key) => {
+      if (key === 'minPrice' || key === 'maxPrice') {
+        filtersFromUrl[key] = parseFloat(value);
+      } else if (key === 'category') {
+        filtersFromUrl[key] = value as CameraCategory;
+      } else if (key === 'level' || key === 'cameraType') {
+        filtersFromUrl[key] = value.split(',');
+      }
+    });
+    setFilters(filtersFromUrl);
   }, [location.search]);
 
   if (isLoading) {
@@ -119,8 +169,8 @@ function CatalogPage(): JSX.Element {
               <div className="page-content__columns">
                 <div className="catalog__aside">
                   <CatalogFilter
-                    maxPrice={maxPrice}
-                    minPrice={minPrice}
+                    maxPrice={currentMaxPrice}
+                    minPrice={currentMinPrice}
                     onFilterChange={handleFilterChange}
                   />
                 </div>
@@ -129,8 +179,8 @@ function CatalogPage(): JSX.Element {
                   <CatalogSort
                     sortType={sortType}
                     sortOrder={sortOrder}
-                    onSortTypeChange={setSortType}
-                    onSortOrderChange={setSortOrder}
+                    onSortTypeChange={(type) => handleSortTypeChange(type)}
+                    onSortOrderChange={(order) => handleSortOrderChange(order)}
                   />
                   <CameraList cameras={paginatedCameras} />
                   <Pagination
