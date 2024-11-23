@@ -1,107 +1,156 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Filters } from '../../types/filters-types/filter-types';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
 
 type CatalogFilterProps = {
   onFilterChange: (filters: Filters) => void;
+  filters: Filters;
   maxPrice?: number;
   minPrice?: number;
 }
 
-function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProps): JSX.Element {
-  const [priceFrom, setPriceFrom] = useState<string | number>(minPrice || '');
-  const [priceTo, setPriceTo] = useState<string | number>(maxPrice || '');
-  const [category, setCategory] = useState<CameraCategory | ''>('');
+function CatalogFilter({ onFilterChange, filters, minPrice, maxPrice }: CatalogFilterProps): JSX.Element {
+  const [priceFrom, setPriceFrom] = useState<number | null>(minPrice || null);
+  const [priceTo, setPriceTo] = useState<number | null>(maxPrice || null);
+  const [category, setCategory] = useState<CameraCategory | null>(filters.category || null);
   const [categoryChecked, setCategoryChecked] = useState<boolean>(false);
-  const [cameraType, setCameraType] = useState<string[]>([]);
-  const [cameraLevel, setCameraLevel] = useState<string[]>([]);
-
-  useEffect(() => {
-    onFilterChange({
-      minPrice: priceFrom ? Number(priceFrom) : undefined,
-      maxPrice: priceTo ? Number(priceTo) : undefined,
-      category: category || undefined,
-      cameraType: cameraType.length > 0 ? cameraType : undefined,
-      level: cameraLevel.length > 0 ? cameraLevel : undefined,
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraLevel, cameraType, category, priceFrom, priceTo, maxPrice, minPrice]);
+  const [cameraType, setCameraType] = useState<string[]>(filters.cameraType || []);
+  const [cameraLevel, setCameraLevel] = useState<string[]>(filters.level || []);
 
   const handlePriceFromChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setPriceFrom(evt.target.value);
+    const value = Number(evt.target.value);
+    if (isNaN(value)) {
+      setPriceFrom(null);
+    } else {
+      setPriceFrom(value);
+    }
   };
 
   const handlePriceToChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setPriceTo(evt.target.value);
+    const value = Number(evt.target.value);
+    if (isNaN(value)) {
+      setPriceTo(null);
+    } else {
+      setPriceTo(value);
+    }
   };
 
   const handlePriceFromBlur = () => {
-    const fromValue = Number(priceFrom);
-
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      if (fromValue < minPrice || isNaN(fromValue)) {
-        setPriceFrom(minPrice);
-      } else if (fromValue > maxPrice || fromValue > Number(priceTo)) {
-        setPriceFrom(minPrice);
-      }
+    let value = Number(priceFrom);
+    if(isNaN(value)){
+      return;
     }
+
+    if (minPrice && value < minPrice) {
+      value = minPrice;
+      setPriceFrom(minPrice);
+    }
+
+    if (minPrice && maxPrice && value > maxPrice){
+      value = maxPrice;
+      setPriceFrom(maxPrice);
+    }
+
+    if (priceTo && value >= Number(priceTo)) {
+      value = priceTo;
+      setPriceFrom(priceTo);
+    }
+
+    onFilterChange({
+      minPrice: value,
+      maxPrice: priceTo
+    } as Filters);
   };
 
   const handlePriceToBlur = () => {
-    const toValue = Number(priceTo);
+    let value = Number(priceTo);
 
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      if (toValue < minPrice || toValue < Number(priceFrom)) {
-        setPriceTo(maxPrice);
-      } else if (toValue > maxPrice || isNaN(toValue)) {
-        setPriceTo(maxPrice);
-      }
+    if(isNaN(value)){
+      return;
     }
+
+    if (maxPrice && value >= maxPrice) {
+      value = maxPrice;
+      setPriceTo(maxPrice);
+    }
+
+    if (maxPrice && minPrice && value < minPrice){
+      value = minPrice;
+      setPriceTo(minPrice);
+    }
+
+    if (priceFrom && value < Number(priceFrom)) {
+      value = priceFrom;
+      setPriceTo(priceFrom);
+    }
+
+    onFilterChange({
+      minPrice: priceFrom,
+      maxPrice: value,
+    } as Filters);
   };
 
   const handleCategoryChange = (newCategory: 'Видеокамера' | 'Фотоаппарат') => {
     if (category === newCategory && categoryChecked) {
-      setCategory('');
+      setCategory(null);
       setCategoryChecked(false);
       setCameraType([]);
+      onFilterChange({
+        category: null,
+        cameraType: []
+      } as Filters);
     } else {
       setCategory(newCategory);
       setCategoryChecked(true);
       setCameraType(newCategory === 'Видеокамера'
-        ? cameraType.filter((type) => type !== 'Моментальная' && type !== 'Плёночная')
+        ? cameraType?.filter((type) => type !== 'Моментальная' && type !== 'Плёночная') || null
         : cameraType);
+
+      onFilterChange({
+        category: newCategory,
+        cameraType: newCategory === 'Видеокамера'
+          ? cameraType?.filter((type) => type !== 'Моментальная' && type !== 'Плёночная') || null
+          : cameraType
+      } as Filters);
     }
   };
 
   const handleTypeChange = (type: string) => {
-    const updatedTypes = cameraType.includes(type)
-      ? cameraType.filter((t) => t !== type)
-      : [...cameraType, type];
+    const values = cameraType || [];
+    const updatedTypes = values.includes(type)
+      ? values.filter((t) => t !== type)
+      : [...values, type];
     setCameraType(updatedTypes);
-    // updateFilters();
+    onFilterChange({
+      cameraType: updatedTypes.length > 0 ? updatedTypes : undefined,
+    } as Filters);
   };
 
   const handleLevelChange = (level: string) => {
-    const updatedLevels = cameraLevel.includes(level)
-      ? cameraLevel.filter((productLevel) => productLevel !== level)
-      : [...cameraLevel, level];
+    const values = cameraLevel || [];
+    const updatedLevels = values.includes(level)
+      ? values.filter((productLevel) => productLevel !== level)
+      : [...values, level];
 
     setCameraLevel(updatedLevels);
+    onFilterChange({
+      level: updatedLevels.length > 0 ? updatedLevels : undefined,
+    } as Filters);
   };
 
   const resetFilters = () => {
-    setPriceFrom('');
-    setPriceTo('');
-    setCategory('');
+    setPriceFrom(null);
+    setPriceTo(null);
+    setCategory(null);
     setCameraType([]);
     setCameraLevel([]);
 
     onFilterChange({
-      minPrice: undefined,
-      maxPrice: undefined,
-      category: undefined,
-      cameraType: undefined,
-      level: undefined
+      minPrice: null,
+      maxPrice: null,
+      category: null,
+      cameraType: [],
+      level: []
     });
   };
 
@@ -119,7 +168,7 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
                   name="price"
                   onChange={handlePriceFromChange}
                   onBlur={handlePriceFromBlur}
-                  value={priceFrom}
+                  value={priceFrom || ''}
                   placeholder={minPrice ? minPrice.toString() : ''}
                 />
               </label>
@@ -131,7 +180,7 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
                   name="priceUp"
                   onChange={handlePriceToChange}
                   onBlur={handlePriceToBlur}
-                  value={priceTo}
+                  value={priceTo || ''}
                   placeholder={maxPrice ? maxPrice.toString() : ''}
                 />
               </label>
@@ -177,7 +226,7 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
                 <input
                   type="checkbox"
                   name={type}
-                  checked={cameraType.includes(type)}
+                  checked={cameraType?.includes(type)}
                   disabled={category === 'Видеокамера' && (type === 'Плёночная' || type === 'Моментальная')}
                   onChange={() => handleTypeChange(type)}
                 />
@@ -196,7 +245,7 @@ function CatalogFilter({ onFilterChange, maxPrice, minPrice }: CatalogFilterProp
                 <input
                   type="checkbox"
                   name={level}
-                  checked={cameraLevel.includes(level)}
+                  checked={cameraLevel?.includes(level)}
                   onChange={() => handleLevelChange(level)}
                 />
                 <span className="custom-checkbox__icon"></span>

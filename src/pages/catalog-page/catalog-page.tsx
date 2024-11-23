@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../store/hook';
 
 import Footer from '../../components/footer/footer';
@@ -17,23 +17,48 @@ import { AppRoute, ITEMS_PER_PAGE } from '../../const';
 import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
 
+const urlParams = new URLSearchParams(location.search);
+const initialFilters = {
+  minPrice: urlParams.get('minPrice') ? Number(urlParams.get('minPrice')) : undefined,
+  maxPrice: urlParams.get('maxPrice') ? Number(urlParams.get('maxPrice')) : undefined,
+  category: urlParams.get('category') as CameraCategory,
+  level: urlParams.get('level')?.split(','),
+  cameraType: urlParams.get('cameraType')?.split(','),
+};
+const initialCurrentPage = urlParams.get('page') ? Number(urlParams.get('page')) : 1;
+const initialSortType = urlParams.get('sortType') as 'price' | 'rating' || 'price';
+const initialSortOrder = urlParams.get('sortOrder') as 'asc' | 'desc' || 'asc';
+
 function CatalogPage(): JSX.Element {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { cameras, isLoading } = useAppSelector((state) => state.cameras);
   const errorMessage = useAppSelector((state) => state.error.message);
 
-  const [sortType, setSortType] = useState<'price' | 'rating'>('price');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [filters, setFilters] = useState<Filters>({});
-  const [currentMinPrice, setCurrentMinPrice] = useState<number | undefined>(undefined);
-  const [currentMaxPrice, setCurrentMaxPrice] = useState<number | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortType, setSortType] = useState<'price' | 'rating'>(initialSortType);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
+  const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [currentMinPrice, setCurrentMinPrice] = useState<number>();
+  const [currentMaxPrice, setCurrentMaxPrice] = useState<number>();
+  const [currentPage, setCurrentPage] = useState<number>(initialCurrentPage);
+
+  const partiallyFilteredCameras = useMemo(() => {
+    if (cameras) {
+      return filterCamerasByParams(cameras, {
+        ...filters,
+        minPrice: undefined,
+        maxPrice: undefined,
+      });
+    }
+
+    return [];
+  }, [cameras, filters]);
 
   const filteredCameras = useMemo(
     () => (cameras ? filterCamerasByParams(cameras, filters) : []),
     [cameras, filters]
   );
+
   const sortedCameras = useMemo(
     () => (filteredCameras ? sortingCameras(filteredCameras, sortType, sortOrder) : []),
     [filteredCameras, sortType, sortOrder]
@@ -47,31 +72,38 @@ function CatalogPage(): JSX.Element {
   }, [currentPage, sortedCameras]);
 
   const updateQueryParams = (key: string, value: string | number | undefined) => {
-    const params = new URLSearchParams(location.search);
-
     if (value !== undefined && value !== '') {
-      params.set(key, value.toString());
+      searchParams.set(key, value.toString());
     } else {
-      params.delete(key);
+      searchParams.delete(key);
     }
 
-    navigate(`?${params.toString()}`);
+    setSearchParams(searchParams);
   };
 
   const handleFilterChange = (newFilters: Filters) => {
-    const params = new URLSearchParams(location.search);
-
-    Object.entries(newFilters).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value.toString());
-      } else {
-        (
-          params.delete(key)
-        );
+    Object.entries(newFilters).forEach(([key, value]: [string, string | number | Array<number | string> | undefined | null]) => {
+      if(!value){
+        searchParams.delete(key);
+        return;
       }
+
+      if (Array.isArray(value) && !value.length){
+        searchParams.delete(key);
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        searchParams.set(key, value.join(','));
+        return;
+      }
+
+      searchParams.set(key, value.toString());
     });
 
-    navigate(`?${params.toString()}`);
+    setCurrentPage(1);
+    searchParams.set('page', '1');
+    setSearchParams(searchParams);
     setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
@@ -79,6 +111,7 @@ function CatalogPage(): JSX.Element {
     updateQueryParams('sortType', type);
     setSortType(type);
   };
+
   const handleSortOrderChange = (order: 'asc' | 'desc') => {
     updateQueryParams('sortOrder', order);
     setSortOrder(order);
@@ -90,42 +123,24 @@ function CatalogPage(): JSX.Element {
   };
 
   useEffect(() => {
-    if (sortedCameras.length > 0) {
-      const newMinPrice = sortedCameras.reduce((min, camera) => (camera.price < min ? camera.price : min), sortedCameras[0].price);
-      const newMaxPrice = sortedCameras.reduce((max, camera) => (camera.price > max ? camera.price : max), sortedCameras[0].price);
-      setCurrentMinPrice(newMinPrice);
-      setCurrentMaxPrice(newMaxPrice);
-    }
-  }, [sortedCameras]);
+    if (partiallyFilteredCameras.length > 0) {
+      let minPrice = partiallyFilteredCameras[0].price;
+      let maxPrice = partiallyFilteredCameras[0].price;
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const sortTypeParam = params.get('sortType') as 'price' | 'rating';
-    const sortOrderParam = params.get('sortOrder') as 'asc' | 'desc';
-    const pageParam = parseInt(params.get('page') || '1', 10);
-    const filtersFromUrl = {} as Filters;
+      partiallyFilteredCameras.forEach((camera) => {
+        if (camera.price < minPrice) {
+          minPrice = camera.price;
+        }
 
-    if (sortTypeParam) {
-      setSortType(sortTypeParam);
-    }
-    if (sortOrderParam) {
-      setSortOrder(sortOrderParam);
-    }
-    if (pageParam) {
-      setCurrentPage(pageParam);
-    }
+        if (camera.price > maxPrice) {
+          maxPrice = camera.price;
+        }
+      });
 
-    params.forEach((value, key) => {
-      if (key === 'minPrice' || key === 'maxPrice') {
-        filtersFromUrl[key] = parseFloat(value);
-      } else if (key === 'category') {
-        filtersFromUrl[key] = value as CameraCategory;
-      } else if (key === 'level' || key === 'cameraType') {
-        filtersFromUrl[key] = value.split(',');
-      }
-    });
-    setFilters(filtersFromUrl);
-  }, [location.search]);
+      setCurrentMinPrice(minPrice);
+      setCurrentMaxPrice(maxPrice);
+    }
+  }, [partiallyFilteredCameras]);
 
   if (isLoading) {
     return <SpinnerLoader />;
@@ -171,6 +186,7 @@ function CatalogPage(): JSX.Element {
                   <CatalogFilter
                     maxPrice={currentMaxPrice}
                     minPrice={currentMinPrice}
+                    filters={initialFilters}
                     onFilterChange={handleFilterChange}
                   />
                 </div>

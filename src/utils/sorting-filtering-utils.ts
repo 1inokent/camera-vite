@@ -14,16 +14,30 @@ const sortingCameras = (
 
 const filterCamerasByParams = (cameras: Cameras, filters: Filters): Cameras =>
   cameras.filter((camera) => {
-    const isPriceValid =
-      (filters.minPrice === undefined || camera.price >= filters.minPrice) &&
-      (filters.maxPrice === undefined || camera.price <= filters.maxPrice);
-    const isCategoryValid =
-      filters.category === undefined || camera.category === filters.category;
-    const isTypeValid =
-      filters.cameraType === undefined ||
-      filters.cameraType.includes(camera.type);
-    const isLevelValid =
-      filters.level === undefined || filters.level.includes(camera.level);
+    let isPriceValid = !filters.minPrice || !filters.maxPrice;
+    if (filters.minPrice && filters.maxPrice) {
+      isPriceValid =
+        camera.price >= filters.minPrice && camera.price <= filters.maxPrice;
+    } else if (filters.minPrice) {
+      isPriceValid = camera.price >= filters.minPrice;
+    } else if (filters.maxPrice) {
+      isPriceValid = camera.price <= filters.maxPrice;
+    }
+
+    let isCategoryValid = !filters.category;
+    if (filters.category) {
+      isCategoryValid = filters.category === camera.category;
+    }
+
+    let isTypeValid = !filters.cameraType || !filters.cameraType?.length;
+    if (filters.cameraType && filters.cameraType?.length) {
+      isTypeValid = filters.cameraType.includes(camera.type);
+    }
+
+    let isLevelValid = !filters.level || !filters.level?.length;
+    if (filters.level && filters.level?.length) {
+      isLevelValid = filters.level.includes(camera.level);
+    }
 
     return isPriceValid && isCategoryValid && isTypeValid && isLevelValid;
   });

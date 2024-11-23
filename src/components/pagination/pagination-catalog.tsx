@@ -1,10 +1,10 @@
-type PaginationProps = {
+type PaginationCatalogProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 }
 
-function Pagination({currentPage, totalPages, onPageChange}: PaginationProps): JSX.Element | null {
+function PaginationCatalog({currentPage, totalPages, onPageChange}: PaginationCatalogProps): JSX.Element | null {
   if (totalPages <= 1) {
     return null;
   }
@@ -65,4 +65,4 @@ function Pagination({currentPage, totalPages, onPageChange}: PaginationProps): J
   );
 }
 
-export default Pagination;
+export default PaginationCatalog;
