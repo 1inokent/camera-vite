@@ -1,4 +1,5 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { splitDescription } from '../../utils/utils';
 
 type ProductTabsProps = {
@@ -10,6 +11,9 @@ type ProductTabsProps = {
 }
 
 function ProductTabsMemonizated ({ vendorCode, category, type, level, description }: ProductTabsProps): JSX.Element {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isOpenDescription, setIsOpenDescription] = useState(false);
   const [isOpenCharacteristics, setIsOpenCharacteristics] = useState(true);
 
@@ -18,11 +22,25 @@ function ProductTabsMemonizated ({ vendorCode, category, type, level, descriptio
   const toggleDescription = useCallback(() => {
     setIsOpenDescription(true);
     setIsOpenCharacteristics(false);
-  }, []);
+    navigate('#description');
+  }, [navigate]);
   const toggleCharacteristics = useCallback(() => {
     setIsOpenCharacteristics(true);
     setIsOpenDescription(false);
-  }, []);
+    navigate('#characteristics');
+  }, [navigate]);
+
+  useEffect(() => {
+    const currentHash = location.hash;
+
+    if (currentHash === '#description') {
+      setIsOpenDescription(true);
+      setIsOpenCharacteristics(false);
+    } else if (currentHash === '#characteristics') {
+      setIsOpenCharacteristics(true);
+      setIsOpenDescription(false);
+    }
+  }, [location.hash]);
 
   return (
     <div className="tabs product__tabs">

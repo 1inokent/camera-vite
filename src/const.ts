@@ -32,6 +32,8 @@ const CameraLevel = {
 const PHONE_REGULAR_EXPRESSION =
   /^(\+7|8)\s*\(?9\d{2}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
 
+const ITEMS_PER_PAGE = 9;
+
 export {
   AppRoute,
   ApiRout,
@@ -39,4 +41,5 @@ export {
   CameraCategories,
   CameraLevel,
   PHONE_REGULAR_EXPRESSION,
+  ITEMS_PER_PAGE
 };

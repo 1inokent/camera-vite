@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { formattedPrice, standardizePhoneNumber } from '../../utils/utils';
 
-import { Camera } from '../../types/cameras-types/cameras-types';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { PHONE_REGULAR_EXPRESSION } from '../../const';
-import { useHookFormMask } from 'use-mask-input';
 import { useAppDispatch } from '../../store/hook';
 import { sendOrderCameraAction } from '../../store/slices/camera-slice/camera-slice';
+
+import { useHookFormMask } from 'use-mask-input';
+import { Camera } from '../../types/cameras-types/cameras-types';
+import { PHONE_REGULAR_EXPRESSION } from '../../const';
 
 type ContactMePopupProps = {
   content: Camera;
@@ -155,7 +156,7 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
                     required: 'Нужно указать номер',
                     pattern: {
                       value: PHONE_REGULAR_EXPRESSION,
-                      message: 'Введите телефон в формате +7(9XX)XXX-XX-XX',
+                      message: 'Телефон в формате +7(9XX)XXX-XX-XX',
                     }
                   })}
                 />

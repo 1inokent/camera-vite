@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import ProductSimilarSliderList from './product-similar-slider-list';
 import { fetchCamerasSimilarAction } from '../../store/slices/camera-similar-slice/cameras-similar-slice';
 import { clearError, setError } from '../../store/slices/error-slice/error-slice';
-import { useParams } from 'react-router-dom';
+
+import ProductSimilarSliderList from './product-similar-slider-list';
 
 function ProductSimilarSlider(): JSX.Element | null {
   const dispatch = useAppDispatch();
@@ -13,16 +15,15 @@ function ProductSimilarSlider(): JSX.Element | null {
 
   useEffect(() => {
     const abortController = new AbortController();
-    let isMounted = true;
 
     const fetchData = async () => {
       try {
-        if (isMounted && id) {
+        if (id) {
           dispatch(clearError());
           await dispatch(fetchCamerasSimilarAction({ signal: abortController.signal, id }));
         }
       } catch (err) {
-        if (isMounted && !(err === 'Запрос был отменён')) {
+        if (!(err === 'Запрос был отменён')) {
           const errMessage = typeof err === 'string' ? err : 'Ошибка загрузки камер';
           dispatch(setError(errMessage));
         }
@@ -32,7 +33,6 @@ function ProductSimilarSlider(): JSX.Element | null {
     fetchData();
 
     return () => {
-      isMounted = false;
       abortController.abort();
     };
   }, [dispatch, id]);

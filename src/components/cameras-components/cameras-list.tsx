@@ -6,7 +6,7 @@ type CamerasListProps = {
   cameras: Cameras;
 }
 
-function CameraList({cameras}: CamerasListProps): JSX.Element {
+function CamerasList({cameras}: CamerasListProps): JSX.Element {
   return (
     <div className="cards catalog__cards">
       {
@@ -18,4 +18,4 @@ function CameraList({cameras}: CamerasListProps): JSX.Element {
   );
 }
 
-export default CameraList;
+export default CamerasList;

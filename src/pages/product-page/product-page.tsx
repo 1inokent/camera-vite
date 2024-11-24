@@ -12,10 +12,10 @@ import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import ProductReviews from '../../components/product-reviews/product-reviews';
 import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
+import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 import { AppRoute } from '../../const';
 import { formattedPrice } from '../../utils/utils';
-import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -25,16 +25,15 @@ function ProductPage(): JSX.Element {
 
   useEffect(() => {
     const abortController = new AbortController();
-    let isMounted = true;
 
     const fetchData = async () => {
       try {
-        if (isMounted && id) {
+        if (id) {
           dispatch(clearError());
           await dispatch(fetchCameraAction({ signal: abortController.signal, id }));
         }
       } catch (err) {
-        if (isMounted && !(err === 'Запрос был отменён')) {
+        if (!(err === 'Запрос был отменён')) {
           const errMessage = typeof err === 'string' ? err : 'Ошибка загрузки камер';
           dispatch(setError(errMessage));
         }
@@ -44,7 +43,6 @@ function ProductPage(): JSX.Element {
     fetchData();
 
     return () => {
-      isMounted = false;
       abortController.abort();
     };
   }, [dispatch, id]);

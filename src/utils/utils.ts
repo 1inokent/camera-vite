@@ -60,6 +60,21 @@ const getBannerText = (index: number) => {
   }
 };
 
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .replace(/й/g, 'и')
+    .replace(/0/g, 'о')
+    .replace(/c/g, 'k')
+    .replace(/q/g, 'k')
+    .replace(/l/g, 'i')
+    .replace(/0/g, 'o')
+    .replace(/1/g, 'i')
+    .replace(/\s+/g, '')
+    .replace(/-/g, '');
+}
+
 export {
   formattedPrice,
   standardizePhoneNumber,
@@ -67,4 +82,5 @@ export {
   formatDate,
   smoothScrollToTop,
   getBannerText,
+  normalizeText
 };

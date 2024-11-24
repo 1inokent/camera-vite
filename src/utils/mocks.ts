@@ -1,6 +1,7 @@
 import { CameraReview } from '../types/camera-review-types/camera-review-types';
 import { CamerasPromo } from '../types/cameras-promo-types/cameras-promo-types';
 import { Camera, Cameras } from '../types/cameras-types/cameras-types';
+import { Filters } from '../types/filters-types/filter-types';
 
 const mockCamera: Camera = {
   id: 2,
@@ -140,6 +141,14 @@ const mockProduct = {
     'This is a high-end DSLR camera. It comes with a variety of features and accessories.',
 };
 
+const mockFilters: Filters = {
+  minPrice: 1000,
+  maxPrice: 50000,
+  category: null,
+  cameraType: [],
+  level: [],
+};
+
 export {
   mockCamera,
   mockCameraReviews,
@@ -147,4 +156,5 @@ export {
   mockCamerasSimilar,
   mockCameras,
   mockProduct,
+  mockFilters,
 };

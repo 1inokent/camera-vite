@@ -2,17 +2,20 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import ProductTabsMemo from './product-tabs-memo';
 import { mockProduct } from '../../utils/mocks';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('ProductTabsMemo Component', () => {
   it('should render product characteristics by default', () => {
     render(
-      <ProductTabsMemo
-        vendorCode={mockProduct.vendorCode}
-        category={mockProduct.category}
-        type={mockProduct.type}
-        level={mockProduct.level}
-        description={mockProduct.description}
-      />
+      <MemoryRouter>
+        <ProductTabsMemo
+          vendorCode={mockProduct.vendorCode}
+          category={mockProduct.category}
+          type={mockProduct.type}
+          level={mockProduct.level}
+          description={mockProduct.description}
+        />
+      </MemoryRouter>
     );
 
     expect(screen.getByText('Артикул:')).toBeInTheDocument();
@@ -29,13 +32,15 @@ describe('ProductTabsMemo Component', () => {
 
   it('should show description tab when clicked', () => {
     render(
-      <ProductTabsMemo
-        vendorCode={mockProduct.vendorCode}
-        category={mockProduct.category}
-        type={mockProduct.type}
-        level={mockProduct.level}
-        description={mockProduct.description}
-      />
+      <MemoryRouter>
+        <ProductTabsMemo
+          vendorCode={mockProduct.vendorCode}
+          category={mockProduct.category}
+          type={mockProduct.type}
+          level={mockProduct.level}
+          description={mockProduct.description}
+        />
+      </MemoryRouter>
     );
 
     fireEvent.click(screen.getByText('Описание'));
@@ -47,13 +52,15 @@ describe('ProductTabsMemo Component', () => {
 
   it('should switch back to characteristics tab when clicked', () => {
     render(
-      <ProductTabsMemo
-        vendorCode={mockProduct.vendorCode}
-        category={mockProduct.category}
-        type={mockProduct.type}
-        level={mockProduct.level}
-        description={mockProduct.description}
-      />
+      <MemoryRouter>
+        <ProductTabsMemo
+          vendorCode={mockProduct.vendorCode}
+          category={mockProduct.category}
+          type={mockProduct.type}
+          level={mockProduct.level}
+          description={mockProduct.description}
+        />
+      </MemoryRouter>
     );
 
     fireEvent.click(screen.getByText('Описание'));
