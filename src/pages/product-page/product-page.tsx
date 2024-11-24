@@ -12,10 +12,10 @@ import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import ProductReviews from '../../components/product-reviews/product-reviews';
 import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
+import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 import { AppRoute } from '../../const';
 import { formattedPrice } from '../../utils/utils';
-import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();

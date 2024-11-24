@@ -65,7 +65,7 @@ describe('ContactMePopup component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /заказать/i }));
 
-    expect(await screen.findByText(/Введите телефон в формате/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Телефон в формате/i)).toBeInTheDocument();
   });
 
   test('should submit form with valid phone number', () => {

@@ -5,17 +5,17 @@ import { useAppSelector } from '../../store/hook';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
-import CameraList from '../../components/cameras-components/cameras-list';
+import CamerasList from '../../components/cameras-components/cameras-list';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Banner from '../../components/banner/banner';
 import CatalogSort from '../../components/catalog-sort/catalog-sort';
 import CatalogFilter from '../../components/catalog-filter/catalog-filter';
-import Pagination from '../../components/pagination/pagination';
+import PaginationCatalog from '../../components/pagination/pagination-catalog';
 
 import { Filters } from '../../types/filters-types/filter-types';
+import { CameraCategory } from '../../types/cameras-types/cameras-types';
 import { AppRoute, ITEMS_PER_PAGE } from '../../const';
 import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
-import { CameraCategory } from '../../types/cameras-types/cameras-types';
 
 const urlParams = new URLSearchParams(location.search);
 const initialFilters = {
@@ -198,8 +198,8 @@ function CatalogPage(): JSX.Element {
                     onSortTypeChange={(type) => handleSortTypeChange(type)}
                     onSortOrderChange={(order) => handleSortOrderChange(order)}
                   />
-                  <CameraList cameras={paginatedCameras} />
-                  <Pagination
+                  <CamerasList cameras={paginatedCameras} />
+                  <PaginationCatalog
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={(page) => handlePageChange(page)}

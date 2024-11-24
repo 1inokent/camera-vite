@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import ProductSimilarSliderList from './product-similar-slider-list';
 import { fetchCamerasSimilarAction } from '../../store/slices/camera-similar-slice/cameras-similar-slice';
 import { clearError, setError } from '../../store/slices/error-slice/error-slice';
-import { useParams } from 'react-router-dom';
+
+import ProductSimilarSliderList from './product-similar-slider-list';
 
 function ProductSimilarSlider(): JSX.Element | null {
   const dispatch = useAppDispatch();

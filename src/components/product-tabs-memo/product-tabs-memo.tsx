@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useState } from 'react';
-import { splitDescription } from '../../utils/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { splitDescription } from '../../utils/utils';
 
 type ProductTabsProps = {
   vendorCode: string;
