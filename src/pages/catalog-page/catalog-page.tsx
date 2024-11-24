@@ -10,7 +10,7 @@ import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Banner from '../../components/banner/banner';
 import CatalogSort from '../../components/catalog-sort/catalog-sort';
 import CatalogFilter from '../../components/catalog-filter/catalog-filter';
-import PaginationCatalog from '../../components/pagination/pagination-catalog';
+import PaginationCatalog from '../../components/pagination-catalog/pagination-catalog';
 
 import { Filters } from '../../types/filters-types/filter-types';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
