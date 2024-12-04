@@ -1,6 +1,7 @@
 enum AppRoute {
   CatalogPage = '/',
   ProductPage = '/cameras/:id',
+  BasketPage = '/card'
 }
 
 enum ApiRout {

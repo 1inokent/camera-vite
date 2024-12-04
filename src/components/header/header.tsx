@@ -29,6 +29,12 @@ function Header(): JSX.Element {
         </nav>
 
         <FormSearch />
+
+        <Link className="header__basket-link" to={AppRoute.BasketPage}>
+          <svg width="16" height="16" aria-hidden="true">
+            <use xlinkHref="#icon-basket"></use>
+          </svg>
+        </Link>
       </div>
     </header>
   );
