@@ -1,14 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
-import { formattedPrice, standardizePhoneNumber } from '../../utils/utils';
+import { formattedPrice } from '../../utils/utils';
 
 import { useAppDispatch } from '../../store/hook';
-import { sendOrderCameraAction } from '../../store/slices/camera-slice/camera-slice';
 
-import { useHookFormMask } from 'use-mask-input';
 import { Camera } from '../../types/cameras-types/cameras-types';
-import { PHONE_REGULAR_EXPRESSION } from '../../const';
+import { addToBasket } from '../../store/slices/basket-slice/basket-slice';
 
 type ContactMePopupProps = {
   content: Camera;
@@ -23,8 +21,7 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const {register, setFocus, handleSubmit, formState: { errors }} = useForm<PopupInputProps>();
-  const registerWithMask = useHookFormMask(register);
+  const { setFocus } = useForm<PopupInputProps>();
 
   useEffect(() => {
     const handleEscape = (evt: KeyboardEvent) => {
@@ -89,12 +86,8 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
 
   const correctName = id === 1 ? name : `${category} ${name}`;
 
-  const onSubmit: SubmitHandler<PopupInputProps> = (data) => {
-    const standardizedPhone = standardizePhoneNumber(data.userTel);
-    const arrayId = [Number(id)];
-
-    dispatch(sendOrderCameraAction({camerasIds: arrayId, tel: standardizedPhone }));
-    onClose();
+  const handleAddToBasket = () => {
+    dispatch(addToBasket(content));
   };
 
   return (
@@ -102,7 +95,7 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
       <div className="modal__wrapper" role='popupName'>
         <div className="modal__overlay" onClick={onClose} role="presentation"></div>
         <div className="modal__content">
-          <p className="title title--h4">Свяжитесь со мной</p>
+          <p className="title title--h4">Добавить товар в корзину</p>
 
           <div className="basket-item basket-item--short">
             <div className="basket-item__img">
@@ -137,43 +130,18 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
             </div>
           </div>
 
-          <form
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="custom-input form-review__item">
-              <label>
-                <span className="custom-input__label">Телефон
-                  <svg width="9" height="9" aria-hidden="true">
-                    <use xlinkHref="#icon-snowflake"></use>
-                  </svg>
-                </span>
-                <input
-                  id='userTel'
-                  type="tel"
-                  placeholder="Введите ваш номер"
-                  {...registerWithMask('userTel', '+7(999)999-99-99', {
-                    required: 'Нужно указать номер',
-                    pattern: {
-                      value: PHONE_REGULAR_EXPRESSION,
-                      message: 'Телефон в формате +7(9XX)XXX-XX-XX',
-                    }
-                  })}
-                />
-                {errors.userTel && (
-                  <p className="custom-input__error" style={{ opacity: 1 }}>{errors.userTel.message}</p>
-                )}
-              </label>
-            </div>
-
-            <div className="modal__buttons" >
-              <button className="btn btn--purple modal__btn modal__btn--fit-width" type="submit">
-                <svg width="24" height="16" aria-hidden="true">
-                  <use xlinkHref="#icon-add-basket"></use>
-                </svg>Заказать
-              </button>
-            </div>
-          </form>
+          <div className="modal__buttons">
+            <button
+              className="btn btn--purple modal__btn modal__btn--fit-width"
+              type="submit"
+              onClick={handleAddToBasket}
+            >
+              <svg width="24" height="16" aria-hidden="true">
+                <use xlinkHref="#icon-add-basket"></use>
+              </svg>
+                Добавить в корзину
+            </button>
+          </div>
 
           <button
             className="cross-btn"

@@ -16,12 +16,19 @@ import ProductSimilarSlider from '../../components/products-similar/product-simi
 
 import { AppRoute } from '../../const';
 import { formattedPrice } from '../../utils/utils';
+import { addToBasket } from '../../store/slices/basket-slice/basket-slice';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const errorMessage = useAppSelector((state) => state.error.message);
   const { camera, isLoading } = useAppSelector((state) => state.camera);
   const { id } = useParams<{ id: string }>();
+
+  const handleAddToBasket = () => {
+    if (camera) {
+      dispatch(addToBasket(camera));
+    }
+  };
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -122,7 +129,7 @@ function ProductPage(): JSX.Element {
                     {formattedPrice(price)} ₽
                   </p>
 
-                  <button className="btn btn--purple" type="button">
+                  <button className="btn btn--purple" type="button" onClick={handleAddToBasket}>
                     <svg width="24" height="16" aria-hidden="true">
                       <use xlinkHref="#icon-add-basket"></use>
                     </svg>Добавить в корзину
