@@ -142,8 +142,8 @@ function CatalogPage(): JSX.Element {
     }
   }, [partiallyFilteredCameras]);
 
-  if (isLoading) {
-    return <SpinnerLoader />;
+  if (isLoading || cameras.length === 0) {
+    return (<SpinnerLoader />);
   }
 
   if (errorMessage && !cameras) {
@@ -162,10 +162,6 @@ function CatalogPage(): JSX.Element {
         <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
       </Link>
     );
-  }
-
-  if (!cameras) {
-    <SpinnerLoader />;
   }
 
   return (

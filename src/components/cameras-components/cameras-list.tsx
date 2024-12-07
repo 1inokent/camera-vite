@@ -9,9 +9,9 @@ type CamerasListProps = {
 }
 
 function CamerasList({cameras, loading}: CamerasListProps): JSX.Element {
-  if (loading || cameras.length === 0) {
-    return (<SpinnerLoader />);
-  }
+  // if (loading || cameras.length === 0) {
+  //   return (<SpinnerLoader />);
+  // }
 
   return (
     <div className="cards catalog__cards">
