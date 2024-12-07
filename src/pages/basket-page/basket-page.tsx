@@ -58,6 +58,11 @@ function BasketPage(): JSX.Element {
     );
   }
 
+  const totalPrice = basketItems.reduce((accumulator, currentItem) => {
+    const priceCameras = currentItem.price * currentItem.quantity;
+    return accumulator + priceCameras;
+  }, 0);
+
   return (
     <div className="wrapper">
       <Header />
@@ -88,7 +93,7 @@ function BasketPage(): JSX.Element {
                       quantity
                     } = basketItem;
                     const correctName = id === 1 ? name : `${category} ${name}`;
-                    const totalPrice = quantity * price;
+                    const priceSelectedCamera = quantity * price;
 
                     return (
                       <li className='basket-item' key={id}>
@@ -128,6 +133,7 @@ function BasketPage(): JSX.Element {
                             className="btn-icon btn-icon--prev"
                             aria-label="уменьшить количество товара"
                             onClick={() => handleDecreaseQuantity(id, quantity)}
+                            disabled={quantity === 1}
                           >
                             <svg width="7" height="12" aria-hidden="true">
                               <use xlinkHref="#icon-arrow"></use>
@@ -156,7 +162,7 @@ function BasketPage(): JSX.Element {
 
                         <div className="basket-item__total-price">
                           <span className="visually-hidden">Общая цена:</span>
-                          {formatPrice(totalPrice)} ₽
+                          {formatPrice(priceSelectedCamera)} ₽
                         </div>
                         <button
                           className="cross-btn"
@@ -196,15 +202,21 @@ function BasketPage(): JSX.Element {
                 <div className="basket__summary-order">
                   <p className="basket__summary-item">
                     <span className="basket__summary-text">Всего:</span>
-                    <span className="basket__summary-value">111 390 ₽</span>
+                    <span className="basket__summary-value">{formatPrice(totalPrice)} ₽</span>
                   </p>
                   <p className="basket__summary-item">
                     <span className="basket__summary-text">Скидка:</span>
                     <span className="basket__summary-value basket__summary-value--bonus">0 ₽</span>
                   </p>
                   <p className="basket__summary-item">
-                    <span className="basket__summary-text basket__summary-text--total">К оплате:</span>
-                    <span className="basket__summary-value basket__summary-value--total">111 390 ₽</span>
+                    <span
+                      className="basket__summary-text basket__summary-text--total"
+                    >К оплате:
+                    </span>
+                    <span
+                      className="basket__summary-value basket__summary-value--total"
+                    >{formatPrice(totalPrice)} ₽
+                    </span>
                   </p>
                   <button className="btn btn--purple" type="submit">
                   Оформить заказ
