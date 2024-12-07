@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { AppRoute } from '../../const';
+import { AppRoute, PageNames } from '../../const';
 
 type BreadcrumbsProps = {
   productName?: string | null;
@@ -9,8 +9,8 @@ function Breadcrumbs({ productName }: BreadcrumbsProps): JSX.Element {
   const location = useLocation();
 
   const breadcrumbs = [
-    { name: 'Главная', path: AppRoute.CatalogPage, key: 'home' },
-    { name: 'Каталог', path: AppRoute.CatalogPage, key: 'catalog' },
+    { name: PageNames.Home.name, path: AppRoute.CatalogPage, key: PageNames.Home.key },
+    { name: PageNames.Catalog.name, path: AppRoute.CatalogPage, key: PageNames.Catalog.key },
     productName ? { name: productName, path: location.pathname, key: location.pathname } : null,
   ].filter(Boolean);
 

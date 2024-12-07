@@ -164,13 +164,16 @@ function CatalogPage(): JSX.Element {
     );
   }
 
+  if (!cameras) {
+    <SpinnerLoader />;
+  }
+
   return (
     <div className="wrapper">
       <Header />
 
       <main>
         <Banner />
-
         <div className="page-content">
 
           <Breadcrumbs />
@@ -198,7 +201,7 @@ function CatalogPage(): JSX.Element {
                     onSortTypeChange={(type) => handleSortTypeChange(type)}
                     onSortOrderChange={(order) => handleSortOrderChange(order)}
                   />
-                  <CamerasList cameras={paginatedCameras} />
+                  <CamerasList loading={isLoading} cameras={paginatedCameras} />
                   <PaginationCatalog
                     currentPage={currentPage}
                     totalPages={totalPages}

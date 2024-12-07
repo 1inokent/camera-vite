@@ -100,6 +100,6 @@ function ProductTabsMemonizated ({ vendorCode, category, type, level, descriptio
   );
 }
 
-const ProductTabsMemo = memo(ProductTabsMemonizated);
+const ProductTabs = memo(ProductTabsMemonizated);
 
-export default ProductTabsMemo;
+export default ProductTabs;

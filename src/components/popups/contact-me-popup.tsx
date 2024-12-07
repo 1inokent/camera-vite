@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { formattedPrice } from '../../utils/utils';
+import { formatPrice } from '../../utils/utils';
 
 import { useAppDispatch } from '../../store/hook';
 
@@ -125,7 +125,7 @@ function ContactMePopup({content, onClose}: ContactMePopupProps):JSX.Element {
               </ul>
               <p className="basket-item__price">
                 <span className="visually-hidden">Цена:</span>
-                {formattedPrice(price)} ₽
+                {formatPrice(price)} ₽
               </p>
             </div>
           </div>

@@ -1,9 +1,9 @@
-import { CameraCategories, CameraLevel, CameraTypes } from '../../const';
+import { CameraCategories, CameraLevels, CameraTypes } from '../../const';
 
 export type CameraType = (typeof CameraTypes)[keyof typeof CameraTypes];
 export type CameraCategory =
   (typeof CameraCategories)[keyof typeof CameraCategories];
-export type CameraLevelType = (typeof CameraLevel)[keyof typeof CameraLevel];
+export type CameraLevelType = (typeof CameraLevels)[keyof typeof CameraLevels];
 
 export type Camera = {
   id: number;

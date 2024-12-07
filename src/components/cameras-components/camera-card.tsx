@@ -6,7 +6,7 @@ import Rating from '../rating/rating';
 import ContactMePopup from '../popups/contact-me-popup';
 
 import { Camera } from '../../types/cameras-types/cameras-types';
-import { formattedPrice } from '../../utils/utils';
+import { formatPrice } from '../../utils/utils';
 import { AppRoute } from '../../const';
 
 type CameraCardProps = {
@@ -64,7 +64,7 @@ function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
 
         <p className="product-card__price" role='price'>
           <span className="visually-hidden">Цена:</span>
-          {formattedPrice(price)} ₽
+          {formatPrice(price)} ₽
         </p>
       </div>
 

@@ -32,7 +32,7 @@
 
 @media (prefers-color-scheme: dark) {
   .spinnerContainer {
-    --spinner-bg: hsl(223, 10%, 10%);
+    --spinner-bg: hsl(0, 0%, 100%);
     --spinner-fg: hsl(223, 10%, 90%);
   }
 

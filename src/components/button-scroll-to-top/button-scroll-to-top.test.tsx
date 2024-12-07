@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react';
 import ButtonScrollToTop from './button-scroll-to-top';
-import { smoothScrollToTop } from '../../utils/utils';
+import { scrollToTop } from '../../utils/utils';
 import { vi } from 'vitest';
 
 vi.mock('../../utils/utils', () => ({
@@ -22,7 +22,7 @@ describe('ButtonScrollToTop', () => {
 
     fireEvent.click(button);
 
-    expect(smoothScrollToTop).toHaveBeenCalled();
+    expect(scrollToTop).toHaveBeenCalled();
   });
 
   it('changes opacity on mouse enter and leave', () => {
