@@ -3,7 +3,7 @@ import { generatePath, Link } from 'react-router-dom';
 
 
 import Rating from '../rating/rating';
-import ContactMePopup from '../popups/contact-me-popup';
+import Popup from '../popups/popup';
 
 import { Camera } from '../../types/cameras-types/cameras-types';
 import { formatPrice, isCameraInArray } from '../../utils/utils';
@@ -76,10 +76,14 @@ function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
         {
           basketItemsQuantity >= 1 ?
             <div className="product-card__buttons">
-              <Link className="btn btn--purple-border product-card__btn product-card__btn--in-cart" to={AppRoute.BasketPage}>
+              <Link
+                className="btn btn--purple-border product-card__btn product-card__btn--in-cart"
+                to={AppRoute.BasketPage}
+              >
                 <svg width="16" height="16" aria-hidden="true">
                   <use xlinkHref="#icon-basket"></use>
-                </svg>В корзине
+                </svg>
+                В корзине
               </Link>
             </div> :
             <button
@@ -95,7 +99,7 @@ function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
         Подробнее
         </Link>
       </div>
-      {isOpen && <ContactMePopup content={camera} onClose={togglePopup} />}
+      {isOpen && <Popup camera={camera} onClose={togglePopup} />}
     </div>
   );
 }

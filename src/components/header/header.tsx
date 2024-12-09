@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import FormSearch from '../form-search/form-search';
+import { useAppSelector } from '../../store/hook';
 
 function Header(): JSX.Element {
+  const basketLength = useAppSelector((state) => state.basket.basketItems.length);
+
   return (
     <header className="header" id="header">
       <div className="container">
@@ -34,6 +37,7 @@ function Header(): JSX.Element {
           <svg width="16" height="16" aria-hidden="true">
             <use xlinkHref="#icon-basket"></use>
           </svg>
+          {basketLength > 0 ? <span className="header__basket-count">{basketLength}</span> : ''}
         </Link>
       </div>
     </header>

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import ContactMePopup from './contact-me-popup';
+import Popup from './popup';
 import { vi } from 'vitest';
 import { Provider } from 'react-redux';
 import { store } from '../../store';
@@ -17,7 +17,7 @@ describe('ContactMePopup component', () => {
   });
 
   test('should render the modal with camera details', () => {
-    renderWithStore(<ContactMePopup content={mockCamera} onClose={mockOnClose} />);
+    renderWithStore(<Popup camera={mockCamera} onClose={mockOnClose} />);
     const article = screen.getByText(/Артикул:/i);
 
     expect(article).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe('ContactMePopup component', () => {
   });
 
   test('should call onClose when clicking on the overlay', () => {
-    renderWithStore(<ContactMePopup content={mockCamera} onClose={mockOnClose} />);
+    renderWithStore(<Popup camera={mockCamera} onClose={mockOnClose} />);
     const overlay = screen.getByRole('presentation');
 
     fireEvent.click(overlay);
@@ -40,7 +40,7 @@ describe('ContactMePopup component', () => {
   });
 
   test('should call onClose when Escape key is pressed', () => {
-    renderWithStore(<ContactMePopup content={mockCamera} onClose={mockOnClose} />);
+    renderWithStore(<Popup camera={mockCamera} onClose={mockOnClose} />);
 
     fireEvent.keyDown(window, { key: 'Escape' });
 
@@ -48,7 +48,7 @@ describe('ContactMePopup component', () => {
   });
 
   test('should display error if user submits without entering phone number', async () => {
-    renderWithStore(<ContactMePopup content={mockCamera} onClose={mockOnClose} />);
+    renderWithStore(<Popup camera={mockCamera} onClose={mockOnClose} />);
 
     fireEvent.click(screen.getByRole('button', { name: /заказать/i }));
 
@@ -56,7 +56,7 @@ describe('ContactMePopup component', () => {
   });
 
   test('should validate phone number format and show error on invalid input', async () => {
-    renderWithStore(<ContactMePopup content={mockCamera} onClose={mockOnClose} />);
+    renderWithStore(<Popup camera={mockCamera} onClose={mockOnClose} />);
     const input = screen.getByPlaceholderText(/Введите ваш номер/i);
 
     fireEvent.input(input, {
@@ -69,7 +69,7 @@ describe('ContactMePopup component', () => {
   });
 
   test('should submit form with valid phone number', () => {
-    renderWithStore(<ContactMePopup content={mockCamera} onClose={mockOnClose} />);
+    renderWithStore(<Popup camera={mockCamera} onClose={mockOnClose} />);
 
     fireEvent.change(screen.getByPlaceholderText(/Введите ваш номер/i), {
       target: { value: '+7(999)999-99-99' },

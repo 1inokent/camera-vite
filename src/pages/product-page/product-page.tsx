@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
@@ -17,6 +17,7 @@ import ProductSimilarSlider from '../../components/products-similar/product-simi
 import { AppRoute } from '../../const';
 import { formatPrice, isCameraInArray } from '../../utils/utils';
 import { addToBasket } from '../../store/slices/basket-slice/basket-slice';
+import Popup from '../../components/popups/popup';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -28,9 +29,12 @@ function ProductPage(): JSX.Element {
   const basketItemsQuantity = camera ? isCameraInArray(camera.id, basketItems) : 0;
   const isAddToBasketDisabled = basketItemsQuantity >= 9;
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleAddToBasket = () => {
     if (camera) {
       dispatch(addToBasket(camera));
+      setIsOpen(true);
     }
   };
 
@@ -159,8 +163,8 @@ function ProductPage(): JSX.Element {
 
           <ProductSimilarSlider />
           <ProductReviews />
-
         </div>
+        {isOpen && <Popup camera={camera} onClose={() => setIsOpen(!isOpen)} />}
       </main>
 
       <Footer />

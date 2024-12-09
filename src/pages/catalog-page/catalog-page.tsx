@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../store/hook';
 
@@ -41,6 +41,8 @@ function CatalogPage(): JSX.Element {
   const [currentMinPrice, setCurrentMinPrice] = useState<number>();
   const [currentMaxPrice, setCurrentMaxPrice] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(initialCurrentPage);
+
+  const topRef = useRef<HTMLDivElement>(null);
 
   const partiallyFilteredCameras = useMemo(() => {
     if (cameras) {
@@ -120,6 +122,10 @@ function CatalogPage(): JSX.Element {
   const handlePageChange = (page: number) => {
     updateQueryParams('page', page);
     setCurrentPage(page);
+
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -175,7 +181,7 @@ function CatalogPage(): JSX.Element {
           <Breadcrumbs />
 
           <section className="catalog">
-            <div className="container">
+            <div className="container" ref={topRef}>
 
               {errorMessage && <p>{errorMessage}</p>}
 
