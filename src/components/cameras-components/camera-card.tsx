@@ -6,8 +6,9 @@ import Rating from '../rating/rating';
 import ContactMePopup from '../popups/contact-me-popup';
 
 import { Camera } from '../../types/cameras-types/cameras-types';
-import { formatPrice } from '../../utils/utils';
+import { formatPrice, isCameraInArray } from '../../utils/utils';
 import { AppRoute } from '../../const';
+import { useAppSelector } from '../../store/hook';
 
 type CameraCardProps = {
   camera: Camera;
@@ -16,6 +17,9 @@ type CameraCardProps = {
 
 function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
+  const { basketItems } = useAppSelector((state) => state.basket);
+
+  const basketItemsQuantity = camera ? isCameraInArray(camera.id, basketItems) : 0;
 
   const togglePopup = () => {
     setIsOpen(!isOpen);
@@ -69,14 +73,24 @@ function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
       </div>
 
       <div className="product-card__buttons">
-        <button
-          className="btn btn--purple product-card__btn"
-          role='button'
-          type="button"
-          onClick={togglePopup}
-        >
+        {
+          basketItemsQuantity >= 1 ?
+            <div className="product-card__buttons">
+              <Link className="btn btn--purple-border product-card__btn product-card__btn--in-cart" to={AppRoute.BasketPage}>
+                <svg width="16" height="16" aria-hidden="true">
+                  <use xlinkHref="#icon-basket"></use>
+                </svg>В корзине
+              </Link>
+            </div> :
+            <button
+              className="btn btn--purple product-card__btn"
+              role='button'
+              type="button"
+              onClick={togglePopup}
+            >
           Купить
-        </button>
+            </button>
+        }
         <Link className="btn btn--transparent" to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
         Подробнее
         </Link>

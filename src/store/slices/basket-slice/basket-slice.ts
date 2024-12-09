@@ -1,22 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Camera } from '../../../types/cameras-types/cameras-types';
 import { clearError, setError } from '../error-slice/error-slice';
-
-export interface BasketItem extends Camera {
-  quantity: number;
-}
+import { BasketItems } from '../../../types/basket-types/basket-types';
 
 export interface BasketState {
-  basketItems: BasketItem[];
+  basketItems: BasketItems;
 }
 
-const loadBasketFromStorage = (): BasketItem[] => {
+const loadBasketFromStorage = (): BasketItems => {
   const storedBasket = localStorage.getItem('basket');
   if (storedBasket) {
     try {
       const parsedBasket: unknown = JSON.parse(storedBasket);
       if (Array.isArray(parsedBasket)) {
-        return parsedBasket as BasketItem[];
+        return parsedBasket as BasketItems;
       }
     } catch {
       return [];
@@ -25,7 +22,7 @@ const loadBasketFromStorage = (): BasketItem[] => {
   return [];
 };
 
-const saveBasketToStorage = (basket: BasketItem[]): void => {
+const saveBasketToStorage = (basket: BasketItems): void => {
   try {
     localStorage.setItem('basket', JSON.stringify(basket));
   } catch {

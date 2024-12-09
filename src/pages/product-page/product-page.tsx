@@ -15,7 +15,7 @@ import ProductTabs from '../../components/product-tabs/product-tabs';
 import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 import { AppRoute } from '../../const';
-import { formatPrice } from '../../utils/utils';
+import { formatPrice, isCameraInArray } from '../../utils/utils';
 import { addToBasket } from '../../store/slices/basket-slice/basket-slice';
 
 function ProductPage(): JSX.Element {
@@ -25,12 +25,8 @@ function ProductPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const { basketItems } = useAppSelector((state) => state.basket);
 
-  const getItemQuantityInBasket = (idCamera: number) => {
-    const item = basketItems.find((basketItem) => basketItem.id === idCamera);
-    return item ? item.quantity : 0;
-  };
-  const itemQuantity = camera ? getItemQuantityInBasket(camera.id) : 0;
-  const isAddToBasketDisabled = itemQuantity >= 9;
+  const basketItemsQuantity = camera ? isCameraInArray(camera.id, basketItems) : 0;
+  const isAddToBasketDisabled = basketItemsQuantity >= 9;
 
   const handleAddToBasket = () => {
     if (camera) {

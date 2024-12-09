@@ -197,7 +197,11 @@ function CatalogPage(): JSX.Element {
                     onSortTypeChange={(type) => handleSortTypeChange(type)}
                     onSortOrderChange={(order) => handleSortOrderChange(order)}
                   />
-                  <CamerasList loading={isLoading} cameras={paginatedCameras} />
+                  {paginatedCameras.length === 0 ? (
+                    <h3>Нет товаров по такой цене</h3>
+                  ) : (
+                    <CamerasList loading={isLoading} cameras={paginatedCameras} />
+                  )}
                   <PaginationCatalog
                     currentPage={currentPage}
                     totalPages={totalPages}

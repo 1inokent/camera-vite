@@ -1,3 +1,5 @@
+import { BasketItems } from '../types/basket-types/basket-types';
+
 const formatPrice = (price: number) => price.toLocaleString('ru-RU');
 
 const splitDescription = (description: string) => {
@@ -69,6 +71,11 @@ function normalizeText(text: string): string {
     .replace(/-/g, '');
 }
 
+const isCameraInArray = (idCamera: number, basketItems: BasketItems) => {
+  const item = basketItems.find((basketItem) => basketItem.id === idCamera);
+  return item ? item.quantity : 0;
+};
+
 export {
   formatPrice,
   splitDescription,
@@ -76,4 +83,5 @@ export {
   scrollToTop,
   getBannerText,
   normalizeText,
+  isCameraInArray,
 };
