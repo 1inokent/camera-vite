@@ -1,10 +1,6 @@
-const formattedPrice = (price: number) => price.toLocaleString('ru-RU');
+import { BasketItems } from '../types/basket-types/basket-types';
 
-const standardizePhoneNumber = (phone: string) => {
-  const digits = phone.replace(/\D/g, '');
-
-  return `+${digits}`;
-};
+const formatPrice = (price: number) => price.toLocaleString('ru-RU');
 
 const splitDescription = (description: string) => {
   const trimmedDescription = description.endsWith('.')
@@ -30,7 +26,7 @@ const formatDate = (isoDate: string): string => {
   return date.toLocaleDateString('ru-RU', options);
 };
 
-const smoothScrollToTop = () => {
+const scrollToTop = () => {
   const SCROLL_DURATION = 300;
   const SCROLL_STEP = 5;
 
@@ -75,12 +71,17 @@ function normalizeText(text: string): string {
     .replace(/-/g, '');
 }
 
+const isCameraInArray = (idCamera: number, basketItems: BasketItems) => {
+  const item = basketItems.find((basketItem) => basketItem.id === idCamera);
+  return item ? item.quantity : 0;
+};
+
 export {
-  formattedPrice,
-  standardizePhoneNumber,
+  formatPrice,
   splitDescription,
   formatDate,
-  smoothScrollToTop,
+  scrollToTop,
   getBannerText,
-  normalizeText
+  normalizeText,
+  isCameraInArray,
 };

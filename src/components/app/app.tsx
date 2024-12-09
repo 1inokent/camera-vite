@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '../../store/hook';
 import { fetchCamerasAction } from '../../store/slices/cameras-slice/cameras-slice';
 import { clearError, setError } from '../../store/slices/error-slice/error-slice';
+import BasketPage from '../../pages/basket-page/basket-page';
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ function App(): JSX.Element {
         <Route path={AppRoute.CatalogPage}>
           <Route index element={<CatalogPage />} />
           <Route path={AppRoute.ProductPage} element={<ProductPage />} />
+          <Route path={AppRoute.BasketPage} element={<BasketPage />} />
           <Route path='*' element={<NotFoundScreen />} />
         </Route>
       </Routes>

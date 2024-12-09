@@ -1,4 +1,4 @@
-import { smoothScrollToTop } from '../../utils/utils';
+import { scrollToTop } from '../../utils/utils';
 
 function ButtonScrollToTop():JSX.Element {
   return (
@@ -7,7 +7,7 @@ function ButtonScrollToTop():JSX.Element {
       href="#header"
       onClick={(e) => {
         e.preventDefault();
-        smoothScrollToTop();
+        scrollToTop();
       }}
       style={{
         opacity: 0.7,

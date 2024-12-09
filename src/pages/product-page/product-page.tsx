@@ -11,17 +11,28 @@ import Header from '../../components/header/header';
 import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import ProductReviews from '../../components/product-reviews/product-reviews';
-import ProductTabsMemonizated from '../../components/product-tabs-memo/product-tabs-memo';
+import ProductTabs from '../../components/product-tabs/product-tabs';
 import ProductSimilarSlider from '../../components/products-similar/product-similar-slider';
 
 import { AppRoute } from '../../const';
-import { formattedPrice } from '../../utils/utils';
+import { formatPrice, isCameraInArray } from '../../utils/utils';
+import { addToBasket } from '../../store/slices/basket-slice/basket-slice';
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const errorMessage = useAppSelector((state) => state.error.message);
   const { camera, isLoading } = useAppSelector((state) => state.camera);
   const { id } = useParams<{ id: string }>();
+  const { basketItems } = useAppSelector((state) => state.basket);
+
+  const basketItemsQuantity = camera ? isCameraInArray(camera.id, basketItems) : 0;
+  const isAddToBasketDisabled = basketItemsQuantity >= 9;
+
+  const handleAddToBasket = () => {
+    if (camera) {
+      dispatch(addToBasket(camera));
+    }
+  };
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -119,16 +130,21 @@ function ProductPage(): JSX.Element {
                   <Rating rating={rating} reviewCount={reviewCount} />
 
                   <p className="product__price"><span className="visually-hidden">Цена:</span>
-                    {formattedPrice(price)} ₽
+                    {formatPrice(price)} ₽
                   </p>
 
-                  <button className="btn btn--purple" type="button">
+                  <button
+                    className="btn btn--purple"
+                    type="button"
+                    onClick={handleAddToBasket}
+                    disabled={isAddToBasketDisabled}
+                  >
                     <svg width="24" height="16" aria-hidden="true">
                       <use xlinkHref="#icon-add-basket"></use>
                     </svg>Добавить в корзину
                   </button>
 
-                  <ProductTabsMemonizated
+                  <ProductTabs
                     category={category}
                     description={description}
                     level={level}
