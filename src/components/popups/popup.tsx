@@ -91,7 +91,9 @@ function Popup({camera, onClose, removeItem, basketPageFlag}: ContactMePopupProp
           }
           {
             basketPageFlag && isInBasket && (
-              <BasketRemoveItem camera={camera} onClose={onClose} removeItem={removeItem} />
+              <BasketRemoveItem
+                camera={camera} onClose={onClose} removeItem={removeItem} basketItems={basketItems}
+              />
             )
           }
         </div>

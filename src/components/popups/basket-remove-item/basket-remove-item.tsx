@@ -1,15 +1,26 @@
 import { useNavigate } from 'react-router-dom';
 import { Camera } from '../../../types/cameras-types/cameras-types';
 import { AppRoute } from '../../../const';
+import { BasketItems } from '../../../types/basket-types/basket-types';
 
 type BasketRemoveItemProps = {
   camera: Camera;
+  basketItems: BasketItems;
   onClose: () => void;
   removeItem?: () => void;
 }
 
-function BasketRemoveItem({camera, onClose, removeItem}: BasketRemoveItemProps): JSX.Element {
+function BasketRemoveItem({camera, onClose, removeItem, basketItems}: BasketRemoveItemProps): JSX.Element {
   const navigate = useNavigate();
+
+  const handelRemove = () => {
+    if (removeItem) {
+      removeItem();
+      if (basketItems.length === 1) {
+        navigate(AppRoute.CatalogPage);
+      }
+    }
+  };
 
   const {
     id,
@@ -61,7 +72,7 @@ function BasketRemoveItem({camera, onClose, removeItem}: BasketRemoveItemProps):
         <button
           className="btn btn--purple modal__btn modal__btn--half-width"
           type="button"
-          onClick={removeItem}
+          onClick={() => handelRemove()}
         >
             Удалить
         </button>
