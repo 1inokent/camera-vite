@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Camera } from '../../types/cameras-types/cameras-types';
 import AddItemPopup from './catalog-add-item/catalog-add-item';
@@ -9,17 +9,17 @@ import BasketRemoveItem from './basket-remove-item/basket-remove-item';
 
 type ContactMePopupProps = {
   camera: Camera;
-  basketPage?: boolean;
+  basketPageFlag?: boolean;
   onClose: () => void;
   removeItem?: () => void;
 }
 
-function Popup({camera, onClose, removeItem, basketPage}: ContactMePopupProps):JSX.Element {
+function Popup({camera, onClose, removeItem, basketPageFlag}: ContactMePopupProps):JSX.Element {
   const modalRef = useRef<HTMLDivElement>(null);
   const basketItems = useAppSelector((state) => state.basket.basketItems);
 
-  const basketItem = camera ? isCameraInArray(camera.id, basketItems) : 0;
-
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const isInBasket = camera ? isCameraInArray(camera.id, basketItems) : false;
 
   useEffect(() => {
     const handleEscape = (evt: KeyboardEvent) => {
@@ -65,31 +65,32 @@ function Popup({camera, onClose, removeItem, basketPage}: ContactMePopupProps):J
     return () => {
       window.removeEventListener('keydown', handleTabKey);
     };
-  }, [basketItem, onClose]);
+  }, [isInBasket, onClose]);
 
   return (
     <div
-      className={`modal is-active ${basketItem && !basketPage ? 'modal--narrow' : ''}`}
+      className={`modal is-active ${showSuccessPopup && !basketPageFlag ? 'modal--narrow' : ''}`}
       ref={modalRef}
     >
       <div className="modal__wrapper" role='popupName'>
         <div className="modal__overlay" onClick={onClose} role="presentation"></div>
         <div className="modal__content">
           {
-            !basketItem && !basketPage && (
+            !basketPageFlag && !showSuccessPopup && (
               <AddItemPopup
                 camera={camera}
                 onClose={onClose}
+                onSuccess={() => setShowSuccessPopup(true)}
               />
             )
           }
           {
-            basketItem && !basketPage && (
+            showSuccessPopup && !basketPageFlag && (
               <AddItemSuccess onClose={onClose} />
             )
           }
           {
-            basketPage && basketItem && (
+            basketPageFlag && isInBasket && (
               <BasketRemoveItem camera={camera} onClose={onClose} removeItem={removeItem} />
             )
           }

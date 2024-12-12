@@ -8,6 +8,11 @@ type AddItemSuccessProps = {
 function AddItemSuccess({onClose}: AddItemSuccessProps):JSX.Element {
   const navigate = useNavigate();
 
+  const handlerContinueShopping = () => {
+    navigate(AppRoute.CatalogPage);
+    onClose();
+  };
+
   return (
     <>
       <p className="title title--h4">
@@ -21,7 +26,7 @@ function AddItemSuccess({onClose}: AddItemSuccessProps):JSX.Element {
         <a
           className="btn btn--transparent modal__btn"
           href="#"
-          onClick={onClose}
+          onClick={() => handlerContinueShopping()}
         >
           Продолжить покупки
         </a>

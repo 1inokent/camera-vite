@@ -6,10 +6,10 @@ import Header from '../../components/header/header';
 
 import { formatPrice } from '../../utils/utils';
 import { AppRoute, PageNames } from '../../const';
-import { Link } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import { clearBasket, updateQuantity } from '../../store/slices/basket-slice/basket-slice';
 import Popup from '../../components/popups/popup';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -103,26 +103,32 @@ function BasketPage(): JSX.Element {
                         const priceSelectedCamera = quantity * price;
 
                         return (
-                          <>
+                          <React.Fragment key={id}>
                             <li className='basket-item' key={id}>
                               <div className="basket-item__img">
-                                <picture>
-                                  <source
-                                    type="image/webp"
-                                    srcSet={`/${previewImgWebp}, /${previewImgWebp2x}`}
-                                  />
-                                  <img
-                                    src={`/${previewImg}`}
-                                    srcSet={`/${previewImg2x}`}
-                                    width="140"
-                                    height="120"
-                                    alt={correctName}
-                                  />
-                                </picture>
+                                <Link to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
+                                  <picture>
+                                    <source
+                                      type="image/webp"
+                                      srcSet={`/${previewImgWebp}, /${previewImgWebp2x}`}
+                                    />
+                                    <img
+                                      src={`/${previewImg}`}
+                                      srcSet={`/${previewImg2x}`}
+                                      width="140"
+                                      height="120"
+                                      alt={correctName}
+                                    />
+                                  </picture>
+                                </Link>
                               </div>
 
                               <div className="basket-item__description">
-                                <p className="basket-item__title">{correctName}</p>
+                                <p className="basket-item__title">
+                                  <Link to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
+                                    {correctName}
+                                  </Link>
+                                </p>
                                 <ul className="basket-item__list">
                                   <li className="basket-item__list-item">
                                     <span className="basket-item__article">Артикул:</span>
@@ -191,10 +197,10 @@ function BasketPage(): JSX.Element {
                               camera={basketItem}
                               onClose={togglePopup}
                               removeItem={() => handleClearBasket(basketItem.id)}
-                              basketPage
+                              basketPageFlag
                             />
                             }
-                          </>);
+                          </React.Fragment>);
                       }
                       )
                     }

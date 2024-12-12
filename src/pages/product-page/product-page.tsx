@@ -16,7 +16,6 @@ import ProductSimilarSlider from '../../components/products-similar/product-simi
 
 import { AppRoute } from '../../const';
 import { formatPrice, isCameraInArray } from '../../utils/utils';
-import { addToBasket } from '../../store/slices/basket-slice/basket-slice';
 import Popup from '../../components/popups/popup';
 
 function ProductPage(): JSX.Element {
@@ -33,7 +32,6 @@ function ProductPage(): JSX.Element {
 
   const handleAddToBasket = () => {
     if (camera) {
-      dispatch(addToBasket(camera));
       setIsOpen(true);
     }
   };

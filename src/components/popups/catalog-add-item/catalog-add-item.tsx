@@ -6,9 +6,10 @@ import { formatPrice } from '../../../utils/utils';
 type AddItemPopupProps = {
   camera: Camera;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-function AddItemPopup({camera, onClose}: AddItemPopupProps): JSX.Element {
+function AddItemPopup({camera, onClose, onSuccess}: AddItemPopupProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const {
@@ -29,6 +30,9 @@ function AddItemPopup({camera, onClose}: AddItemPopupProps): JSX.Element {
 
   const handleAddToBasket = () => {
     dispatch(addToBasket(camera));
+    if (onSuccess) {
+      onSuccess();
+    }
   };
 
   return (

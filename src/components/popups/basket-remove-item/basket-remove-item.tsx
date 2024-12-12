@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { Camera } from '../../../types/cameras-types/cameras-types';
+import { AppRoute } from '../../../const';
 
 type BasketRemoveItemProps = {
   camera: Camera;
@@ -7,6 +9,8 @@ type BasketRemoveItemProps = {
 }
 
 function BasketRemoveItem({camera, onClose, removeItem}: BasketRemoveItemProps): JSX.Element {
+  const navigate = useNavigate();
+
   const {
     id,
     previewImgWebp,
@@ -64,13 +68,18 @@ function BasketRemoveItem({camera, onClose, removeItem}: BasketRemoveItemProps):
         <a
           className="btn btn--transparent modal__btn modal__btn--half-width"
           href="#"
-          onClick={onClose}
+          onClick={() => navigate(AppRoute.CatalogPage)}
         >
           Продолжить покупки
         </a>
       </div>
 
-      <button className="cross-btn" type="button" aria-label="Закрыть попап">
+      <button
+        className="cross-btn"
+        type="button"
+        aria-label="Закрыть попап"
+        onClick={onClose}
+      >
         <svg width="10" height="10" aria-hidden="true">
           <use xlinkHref="#icon-close"></use>
         </svg>
