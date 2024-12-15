@@ -1,22 +1,24 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import { useAppDispatch, useAppSelector } from '../../store/hook';
+
+import { clearBasket, updateQuantity } from '../../store/slices/basket-slice/basket-slice';
 
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
+import BasketCard from '../../components/basket-components/basket-card';
 
 import { formatPrice } from '../../utils/utils';
 import { AppRoute, PageNames } from '../../const';
-import { generatePath, Link } from 'react-router-dom';
-import { clearBasket, updateQuantity } from '../../store/slices/basket-slice/basket-slice';
-import Popup from '../../components/popups/popup';
-import React, { useState } from 'react';
 
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const { basketItems } = useAppSelector((state) => state.basket);
   const errorMessage = useAppSelector((state) => state.error.message);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [openPopupId, setOpenPopupId] = useState<number | null>(null);
 
   const handleDecreaseQuantity = (id: number, quantity: number) => {
     if (quantity > 1) {
@@ -38,12 +40,16 @@ function BasketPage(): JSX.Element {
   };
 
   const handleClearBasket = (id: number) => {
-    setIsOpen(!isOpen);
     dispatch(clearBasket(id));
+    setOpenPopupId(null);
   };
 
-  const togglePopup = () => {
-    setIsOpen(!isOpen);
+  const handleOpenPopup = (id: number) => {
+    setOpenPopupId(id);
+  };
+
+  const handleClosePopup = () => {
+    setOpenPopupId(null);
   };
 
 
@@ -79,129 +85,27 @@ function BasketPage(): JSX.Element {
                   <div style={{ margin: '50px' }}>
                     <h3>В корзине нет товара</h3>
                     <Link to={AppRoute.CatalogPage}>
-                      <h4 style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться в каталог</h4>
+                      <h4 style={{ color: 'blue', textDecoration: 'underline'}}>
+                        Вернуться в каталог
+                      </h4>
                     </Link>
                   </div> :
                   <ul className="basket__list">
                     {
-                      basketItems.map((basketItem) => {
-                        const {
-                          id,
-                          previewImgWebp,
-                          previewImgWebp2x,
-                          previewImg,
-                          previewImg2x,
-                          name,
-                          category,
-                          vendorCode,
-                          type,
-                          level,
-                          price,
-                          quantity
-                        } = basketItem;
-                        const correctName = id === 1 ? name : `${category} ${name}`;
-                        const priceSelectedCamera = quantity * price;
-
-                        return (
-                          <React.Fragment key={id}>
-                            <li className='basket-item' key={id}>
-                              <div className="basket-item__img">
-                                <Link to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
-                                  <picture>
-                                    <source
-                                      type="image/webp"
-                                      srcSet={`/${previewImgWebp}, /${previewImgWebp2x}`}
-                                    />
-                                    <img
-                                      src={`/${previewImg}`}
-                                      srcSet={`/${previewImg2x}`}
-                                      width="140"
-                                      height="120"
-                                      alt={correctName}
-                                    />
-                                  </picture>
-                                </Link>
-                              </div>
-
-                              <div className="basket-item__description">
-                                <p className="basket-item__title">
-                                  <Link to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
-                                    {correctName}
-                                  </Link>
-                                </p>
-                                <ul className="basket-item__list">
-                                  <li className="basket-item__list-item">
-                                    <span className="basket-item__article">Артикул:</span>
-                                    <span className="basket-item__number">{vendorCode}</span>
-                                  </li>
-                                  <li className="basket-item__list-item">{type} {category}</li>
-                                  <li className="basket-item__list-item">{level} уровень</li>
-                                </ul>
-                              </div>
-                              <p className="basket-item__price">
-                                <span className="visually-hidden">Цена:</span>
-                                {formatPrice(price)} ₽
-                              </p>
-
-                              <div className="quantity">
-                                <button
-                                  className="btn-icon btn-icon--prev"
-                                  aria-label="уменьшить количество товара"
-                                  onClick={() => handleDecreaseQuantity(id, quantity)}
-                                  disabled={quantity === 1}
-                                >
-                                  <svg width="7" height="12" aria-hidden="true">
-                                    <use xlinkHref="#icon-arrow"></use>
-                                  </svg>
-                                </button>
-                                <label className="visually-hidden" htmlFor="counter1"></label>
-                                <input
-                                  type="number"
-                                  id={`counter-${id}`}
-                                  value={quantity}
-                                  min="1" max="99"
-                                  aria-label="количество товара"
-                                  onChange={(e) => handleInputChange(id, e.target.value)}
-                                />
-                                <button
-                                  className="btn-icon btn-icon--next"
-                                  aria-label="увеличить количество товара"
-                                  onClick={() => handleIncreaseQuantity(id, quantity)}
-                                  disabled={quantity === 9}
-                                >
-                                  <svg width="7" height="12" aria-hidden="true">
-                                    <use xlinkHref="#icon-arrow"></use>
-                                  </svg>
-                                </button>
-                              </div>
-
-                              <div className="basket-item__total-price">
-                                <span className="visually-hidden">Общая цена:</span>
-                                {formatPrice(priceSelectedCamera)} ₽
-                              </div>
-                              <button
-                                className="cross-btn"
-                                type="button"
-                                aria-label="Удалить товар"
-                                onClick={togglePopup}
-                              >
-                                <svg width="10" height="10" aria-hidden="true">
-                                  <use xlinkHref="#icon-close"></use>
-                                </svg>
-                              </button>
-                            </li>
-
-                            {
-                              isOpen &&
-                            <Popup
-                              camera={basketItem}
-                              onClose={togglePopup}
-                              removeItem={() => handleClearBasket(basketItem.id)}
-                              basketPageFlag
-                            />
-                            }
-                          </React.Fragment>);
-                      }
+                      basketItems.map((basketItem) =>
+                        (
+                          <BasketCard
+                            key={basketItem.id}
+                            basketItem={basketItem}
+                            onClearBasket={handleClearBasket}
+                            onDecreaseQuantity={handleDecreaseQuantity}
+                            onIncreaseQuantity={handleIncreaseQuantity}
+                            onInputChange={handleInputChange}
+                            onOpen={() => handleOpenPopup(basketItem.id)}
+                            onClose={handleClosePopup}
+                            isPopupOpen={openPopupId === basketItem.id}
+                          />
+                        )
                       )
                     }
                   </ul>

@@ -1,0 +1,17 @@
+.productSimilar__sliderWrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.productSimilar__sliderList {
+  display: flex;
+  will-change: transform;
+}
+
+.productSimilar__card {
+  flex: 0 0 calc(33.333% - 32px);
+  margin: 0 16px;
+  box-sizing: border-box;
+}

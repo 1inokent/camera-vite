@@ -11,7 +11,7 @@ describe('CamerasList Component', () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <CamerasList cameras={mockCameras} />
+          <CamerasList cameras={mockCameras} loading={false} />
         </MemoryRouter>
       </Provider>
     );
@@ -28,7 +28,7 @@ describe('CamerasList Component', () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <CamerasList cameras={[]} />
+          <CamerasList cameras={[]} loading={false} />
         </MemoryRouter>
       </Provider>
     );

@@ -41,66 +41,72 @@ function CameraCard({camera, isActive = false}: CameraCardProps): JSX.Element {
   const correctName = id === 1 ? name : `${category} ${name}`;
 
   return (
-    <div className={`product-card ${isActive ? 'is-active' : ''}`} role='cardWrapper'>
-      <div className="product-card__img">
-        <picture>
-          <source type="image/webp" srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`} />
-          <img
-            src={`/${previewImg}`}
-            srcSet={`/${previewImg2x}`}
-            width="280"
-            height="240"
-            alt={correctName}
-          />
-        </picture>
-      </div>
-
+    <>
       <div
-        className="product-card__info"
-        style={{ display: 'block' }}
+        className={`product-card ${isActive ? 'is-active' : ''}`}
+        role='cardWrapper'
+        style={{ width: '100%' }}
       >
+        <div className="product-card__img">
+          <picture>
+            <source type="image/webp" srcSet={`/${previewImgWebp}, ${previewImgWebp2x}`} />
+            <img
+              src={`/${previewImg}`}
+              srcSet={`/${previewImg2x}`}
+              width="280"
+              height="240"
+              alt={correctName}
+            />
+          </picture>
+        </div>
 
-        <Rating rating={rating} reviewCount={reviewCount} />
+        <div
+          className="product-card__info"
+          style={{ display: 'block' }}
+        >
 
-        <p className="product-card__title" role='name'>
-          {correctName}
-        </p>
+          <Rating rating={rating} reviewCount={reviewCount} />
 
-        <p className="product-card__price" role='price'>
-          <span className="visually-hidden">Цена:</span>
-          {formatPrice(price)} ₽
-        </p>
-      </div>
+          <p className="product-card__title" role='name'>
+            {correctName}
+          </p>
 
-      <div className="product-card__buttons">
-        {
-          basketItemsQuantity >= 1 ?
-            <div className="product-card__buttons">
-              <Link
-                className="btn btn--purple-border product-card__btn product-card__btn--in-cart"
-                to={AppRoute.BasketPage}
-              >
-                <svg width="16" height="16" aria-hidden="true">
-                  <use xlinkHref="#icon-basket"></use>
-                </svg>
+          <p className="product-card__price" role='price'>
+            <span className="visually-hidden">Цена:</span>
+            {formatPrice(price)} ₽
+          </p>
+        </div>
+
+        <div className="product-card__buttons">
+          {
+            basketItemsQuantity >= 1 ?
+              <div className="product-card__buttons">
+                <Link
+                  className="btn btn--purple-border product-card__btn product-card__btn--in-cart"
+                  to={AppRoute.BasketPage}
+                >
+                  <svg width="16" height="16" aria-hidden="true">
+                    <use xlinkHref="#icon-basket"></use>
+                  </svg>
                 В корзине
-              </Link>
-            </div> :
-            <button
-              className="btn btn--purple product-card__btn"
-              role='button'
-              type="button"
-              onClick={togglePopup}
-            >
+                </Link>
+              </div> :
+              <button
+                className="btn btn--purple product-card__btn"
+                role='button'
+                type="button"
+                onClick={togglePopup}
+              >
           Купить
-            </button>
-        }
-        <Link className="btn btn--transparent" to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
+              </button>
+          }
+          <Link className="btn btn--transparent" to={generatePath(AppRoute.ProductPage, {id: id.toString()})}>
         Подробнее
-        </Link>
+          </Link>
+        </div>
       </div>
       {isOpen && <Popup camera={camera} onClose={togglePopup} />}
-    </div>
+    </>
   );
 }
 

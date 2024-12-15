@@ -11,6 +11,8 @@ import 'swiper/css/bundle';
 
 import BannerSlider from './banner-slider';
 
+import styles from './banner.module.css';
+
 function Banner(): JSX.Element {
   const dispatch = useAppDispatch();
   const { camerasPromo } = useAppSelector((state) => state.camerasPromo);
@@ -56,7 +58,7 @@ function Banner(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <div className='banner' style={{ minHeight: 'auto', position: 'relative', width: '100%'}}>
+    <div className={`banner ${styles.customBanner}`}>
       {
         camerasPromo && camerasPromo.length > 0 && (
           <Swiper
@@ -75,16 +77,8 @@ function Banner(): JSX.Element {
               ))
             }
             <div
-              className="swiper-pagination"
-              style={{
-                position: 'absolute',
-                bottom: '15px',
-                marginRight: '50px',
-                left: '89%',
-                display: 'flex',
-                gap: '8px',
-                zIndex: 10,
-              }}
+              className={`swiper-pagination ${styles.customSwiperPagination}`}
+              style={{ left: '89%'}}
             />
           </Swiper>
         )

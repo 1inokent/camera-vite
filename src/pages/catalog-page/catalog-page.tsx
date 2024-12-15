@@ -14,6 +14,7 @@ import PaginationCatalog from '../../components/pagination-catalog/pagination-ca
 
 import { Filters } from '../../types/filters-types/filter-types';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
+
 import { AppRoute, ITEMS_PER_PAGE } from '../../const';
 import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
 

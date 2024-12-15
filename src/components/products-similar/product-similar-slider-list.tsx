@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Cameras } from '../../types/cameras-types/cameras-types';
 import CameraCard from '../cameras-components/camera-card';
 
+import styles from './product-similar-slider-list.module.css';
+
 const ITEMS_PER_PAGE = 3;
 
 type ProductSimilarListProps = {
   camerasSimilar: Cameras;
 }
 
-function ProductSimilarList({camerasSimilar}: ProductSimilarListProps): JSX.Element {
+function ProductSimilarSliderList({camerasSimilar}: ProductSimilarListProps): JSX.Element {
   const [activeIndex, setActiveIndex] = useState(0);
   const totalItems = camerasSimilar.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -30,14 +32,26 @@ function ProductSimilarList({camerasSimilar}: ProductSimilarListProps): JSX.Elem
     return index >= start && index < start + ITEMS_PER_PAGE;
   };
 
+  const translateX = -(activeIndex * 100);
+
   return (
-    <>
+    <div className={styles.productSimilar__sliderWrapper}>
       <div
         className="product-similar__slider-list"
+        style={{
+          transition: 'transform 0.8s ease-in-out',
+          transform: `translateX(${translateX}%)`,
+          width: `${100 * totalPages}%`
+        }}
       >
         {
           camerasSimilar.map((camera, index) => (
-            <CameraCard camera={camera} key={camera.id} isActive={getActiveClass(index)} />
+            <div
+              key={camera.id}
+              className={styles.productSimilar__card}
+            >
+              <CameraCard camera={camera} key={camera.id} isActive={getActiveClass(index)} />
+            </div>
           ))
         }
       </div>
@@ -65,8 +79,8 @@ function ProductSimilarList({camerasSimilar}: ProductSimilarListProps): JSX.Elem
           <use xlinkHref="#icon-arrow"></use>
         </svg>
       </button>
-    </>
+    </div>
   );
 }
 
-export default ProductSimilarList;
+export default ProductSimilarSliderList;
