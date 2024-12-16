@@ -105,7 +105,7 @@ function BasketCard({
             type="number"
             id={`counter-${id}`}
             value={quantity}
-            min="1" max="99"
+            min="1" max="9"
             aria-label="количество товара"
             onChange={(e) => onInputChange(id, e.target.value)}
           />

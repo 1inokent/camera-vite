@@ -45,6 +45,10 @@ function Popup({camera, onClose, removeItem, basketPageFlag}: ContactMePopupProp
     const firstElement = focusableElements?.[0];
     const lastElement = focusableElements?.[focusableElements.length - 1];
 
+    if (firstElement) {
+      firstElement.focus();
+    }
+
     const handleTabKey = (event: KeyboardEvent) => {
       if (!focusableElements || focusableElements.length === 0) {
         return;
