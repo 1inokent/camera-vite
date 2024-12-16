@@ -10,8 +10,9 @@ import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import BasketCard from '../../components/basket-components/basket-card';
 
-import { formatPrice } from '../../utils/utils';
+// import { formatPrice } from '../../utils/utils';
 import { AppRoute, PageNames } from '../../const';
+import BasketSummaryOrder from '../../components/basket-components/basket-summary-order';
 
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -64,10 +65,10 @@ function BasketPage(): JSX.Element {
     );
   }
 
-  const totalPrice = basketItems.reduce((accumulator, currentItem) => {
-    const priceCameras = currentItem.price * currentItem.quantity;
-    return accumulator + priceCameras;
-  }, 0);
+  // const totalPrice = basketItems.reduce((accumulator, currentItem) => {
+  //   const priceCameras = currentItem.price * currentItem.quantity;
+  //   return accumulator + priceCameras;
+  // }, 0);
 
   return (
     <div className="wrapper">
@@ -136,8 +137,8 @@ function BasketPage(): JSX.Element {
                     </form>
                   </div>
                 </div>
-
-                <div className="basket__summary-order">
+                <BasketSummaryOrder basketItems={basketItems} />
+                {/* <div className="basket__summary-order">
                   <p className="basket__summary-item">
                     <span className="basket__summary-text">Всего:</span>
                     <span className="basket__summary-value">{formatPrice(totalPrice)} ₽</span>
@@ -163,7 +164,7 @@ function BasketPage(): JSX.Element {
                   >
                   Оформить заказ
                   </button>
-                </div>
+                </div> */}
 
               </div>
             </div>

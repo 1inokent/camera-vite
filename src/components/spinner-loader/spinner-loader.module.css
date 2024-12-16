@@ -3,7 +3,8 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: var(--spinner-bg, hsl(223, 10%, 90%));
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   color: var(--spinner-fg, hsl(223, 10%, 10%));
 }
 
