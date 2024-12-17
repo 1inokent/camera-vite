@@ -2,24 +2,31 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-
 import { clearBasket, updateQuantity } from '../../store/slices/basket-slice/basket-slice';
 
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import BasketCard from '../../components/basket-components/basket-card';
-
-import { AppRoute, PageNames } from '../../const';
 import BasketSummaryOrder from '../../components/basket-components/basket-summary-order';
 import BasketPromo from '../../components/basket-components/basket-promo';
+import SpinnerLoader from '../../components/spinner-loader/spinner-loader';
+
+import { AppRoute, PageNames } from '../../const';
+import Popup from '../../components/popups/popup';
 
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const { basketItems } = useAppSelector((state) => state.basket);
   const errorMessage = useAppSelector((state) => state.error.message);
+  const loading = useAppSelector((state) => state.basket.loading);
 
   const [openPopupId, setOpenPopupId] = useState<number | null>(null);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const handleOrderSuccess = () => {
+    setOrderSuccess(true);
+  };
 
   const handleDecreaseQuantity = (id: number, quantity: number) => {
     if (quantity > 1) {
@@ -54,15 +61,21 @@ function BasketPage(): JSX.Element {
   };
 
 
-  if (errorMessage && !basketItems) {
+  if (errorMessage && basketItems.length === 0) {
     return (
       <>
         <h2>{errorMessage}</h2>
         <Link to={AppRoute.CatalogPage}>
-          <p style={{ color: 'blue', textDecoration: 'underline'}}>Вернуться на главную</p>
+          <p style={{ color: 'blue', textDecoration: 'underline'}}>
+            Вернуться на главную
+          </p>
         </Link>
       </>
     );
+  }
+
+  if (loading) {
+    return <SpinnerLoader />;
   }
 
   return (
@@ -109,13 +122,18 @@ function BasketPage(): JSX.Element {
 
               <div className="basket__summary">
                 <BasketPromo />
-                <BasketSummaryOrder basketItems={basketItems} />
+                <BasketSummaryOrder
+                  basketItems={basketItems}
+                  orderSuccess={handleOrderSuccess}
+                  loading={loading}
+                />
               </div>
             </div>
           </section>
         </div>
       </main>
       <Footer />
+      {orderSuccess && <Popup orderSuccess onClose={() => setOrderSuccess(false)} />}
     </div>
   );
 }

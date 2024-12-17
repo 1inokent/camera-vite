@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, generatePath } from 'react-router-dom';
 
 import Popup from '../popups/popup';
@@ -45,8 +45,27 @@ function BasketCard({
     quantity
   } = basketItem;
 
+  const [tempQuantity, setTempQuantity] = useState<string>(quantity.toString());
+
+  useEffect(() => {
+    setTempQuantity(quantity.toString());
+  }, [quantity]);
+
   const correctName = id === 1 ? name : `${category} ${name}`;
   const priceSelectedCamera = quantity * price;
+
+  const handleFocus = () => setTempQuantity('');
+  const handleBlur = () => {
+    const pasedValue = parseInt(tempQuantity, 10);
+    if (!isNaN(pasedValue) && pasedValue >= 1 && pasedValue <= 9) {
+      onInputChange(id, tempQuantity);
+    } else {
+      setTempQuantity(quantity.toString());
+    }
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempQuantity(e.target.value);
+  };
 
   return (
     <React.Fragment key={id}>
@@ -104,10 +123,12 @@ function BasketCard({
           <input
             type="number"
             id={`counter-${id}`}
-            value={quantity}
+            value={tempQuantity}
             min="1" max="9"
             aria-label="количество товара"
-            onChange={(e) => onInputChange(id, e.target.value)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChange={handleChange}
           />
           <button
             className="btn-icon btn-icon--next"

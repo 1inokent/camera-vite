@@ -7,15 +7,17 @@ import { isCameraInArray } from '../../utils/utils';
 import AddItemSuccess from './catalog-add-item/add-item-success';
 import BasketRemoveItem from './basket-remove-item/basket-remove-item';
 import ReactDOM from 'react-dom';
+import BasketSendSuccess from './basket-send-success/basket-send-success';
 
 type ContactMePopupProps = {
-  camera: Camera;
+  camera?: Camera;
   basketPageFlag?: boolean;
+  orderSuccess?: boolean;
   onClose: () => void;
   removeItem?: () => void;
 }
 
-function Popup({camera, onClose, removeItem, basketPageFlag}: ContactMePopupProps):JSX.Element {
+function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: ContactMePopupProps):JSX.Element {
   const modalRef = useRef<HTMLDivElement>(null);
   const basketItems = useAppSelector((state) => state.basket.basketItems);
 
@@ -86,7 +88,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag}: ContactMePopupProp
         </div>
         <div className="modal__content">
           {
-            !basketPageFlag && !showSuccessPopup && (
+            !basketPageFlag && !showSuccessPopup && camera && (
               <AddItemPopup
                 camera={camera}
                 onClose={onClose}
@@ -100,10 +102,15 @@ function Popup({camera, onClose, removeItem, basketPageFlag}: ContactMePopupProp
             )
           }
           {
-            basketPageFlag && isInBasket && (
+            basketPageFlag && isInBasket && !orderSuccess && camera && (
               <BasketRemoveItem
                 camera={camera} onClose={onClose} removeItem={removeItem} basketItems={basketItems}
               />
+            )
+          }
+          {
+            orderSuccess && (
+              <BasketSendSuccess onClose={onClose} />
             )
           }
         </div>

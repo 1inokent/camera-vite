@@ -1,10 +1,14 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Camera } from '../../../types/cameras-types/cameras-types';
 import { clearError, setError } from '../error-slice/error-slice';
 import { BasketItems } from '../../../types/basket-types/basket-types';
+import { AxiosInstance, AxiosError } from 'axios';
+import { ApiRout } from '../../../const';
+import { OrdersCamera } from '../../../types/send-data-types/orders-type';
 
 export interface BasketState {
   basketItems: BasketItems;
+  loading: boolean;
 }
 
 const loadBasketFromStorage = (): BasketItems => {
@@ -32,12 +36,17 @@ const saveBasketToStorage = (basket: BasketItems): void => {
 
 const initialState: BasketState = {
   basketItems: loadBasketFromStorage(),
+  loading: false,
 };
 
 const basketSlice = createSlice({
   name: 'basket',
   initialState,
   reducers: {
+    setBasketSendLoader(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload;
+    },
+
     addToBasket(state, action: PayloadAction<Camera>) {
       try {
         const existingItem = state.basketItems.find(
@@ -54,6 +63,7 @@ const basketSlice = createSlice({
         setError('Ошибка при добавлении товара в корзину.');
       }
     },
+
     removeFromBasket(state, action: PayloadAction<number>) {
       try {
         state.basketItems = state.basketItems.filter(
@@ -65,6 +75,7 @@ const basketSlice = createSlice({
         setError('Ошибка при удалении товара из корзины.');
       }
     },
+
     updateQuantity(
       state,
       action: PayloadAction<{ id: number; quantity: number }>
@@ -82,11 +93,18 @@ const basketSlice = createSlice({
         setError('Ошибка при обновлении количества товара.');
       }
     },
-    clearBasket(state, action: PayloadAction<number>) {
+
+    clearBasket(state, action: PayloadAction<number | undefined>) {
       try {
-        state.basketItems = state.basketItems.filter(
-          (item) => item.id !== action.payload
-        );
+        const idToClear = action.payload;
+        if (idToClear) {
+          state.basketItems = state.basketItems.filter(
+            (item) => item.id !== idToClear
+          );
+        } else {
+          state.basketItems = [];
+        }
+
         saveBasketToStorage(state.basketItems);
         clearError();
       } catch {
@@ -96,7 +114,39 @@ const basketSlice = createSlice({
   },
 });
 
-export const { addToBasket, removeFromBasket, updateQuantity, clearBasket } =
-  basketSlice.actions;
+export const sendOrderAction = createAsyncThunk<
+  void,
+  OrdersCamera,
+  { extra: AxiosInstance; rejectValue: string }
+>(
+  'order/sendOrder',
+  async (
+    { camerasIds, coupon = null },
+    { extra: api, dispatch, rejectWithValue }
+  ) => {
+    dispatch(clearError());
+    try {
+      await api.post(ApiRout.Orders, {
+        camerasIds,
+        coupon,
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorMessage = error.message || 'Не удалось отправить заказ';
+        dispatch(setError(errorMessage));
+        return rejectWithValue(errorMessage);
+      }
+      return rejectWithValue('Произошла неизвестная ошибка');
+    }
+  }
+);
+
+export const {
+  setBasketSendLoader,
+  addToBasket,
+  removeFromBasket,
+  updateQuantity,
+  clearBasket,
+} = basketSlice.actions;
 
 export default basketSlice.reducer;
