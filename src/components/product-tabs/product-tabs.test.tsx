@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import ProductTabsMemo from './product-tabs-memo';
+import ProductTabsMemo from './product-tabs';
 import { mockProduct } from '../../utils/mocks';
 import { MemoryRouter } from 'react-router-dom';
 

@@ -1,7 +1,8 @@
+import ReactDOM from 'react-dom';
 import styles from './spinner-loader.module.css';
 
 function SpinnerLoader():JSX.Element {
-  return (
+  return ReactDOM.createPortal(
     <div className={styles.spinnerContainer}>
       <svg
         className={styles.pl}
@@ -38,7 +39,8 @@ function SpinnerLoader():JSX.Element {
           strokeDashoffset="10"
         />
       </svg>
-    </div>
+    </div>,
+    document.body
   );
 }
 
