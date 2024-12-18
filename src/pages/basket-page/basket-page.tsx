@@ -17,9 +17,9 @@ import Popup from '../../components/popups/popup';
 
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { basketItems } = useAppSelector((state) => state.basket);
   const errorMessage = useAppSelector((state) => state.error.message);
   const loading = useAppSelector((state) => state.basket.loading);
+  const { basketItems } = useAppSelector((state) => state.basket);
 
   const [openPopupId, setOpenPopupId] = useState<number | null>(null);
   const [orderSuccess, setOrderSuccess] = useState(false);

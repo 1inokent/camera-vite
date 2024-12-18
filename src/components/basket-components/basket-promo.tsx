@@ -1,4 +1,18 @@
+// import { useAppDispatch, useAppSelector } from '../../store/hook';
+// import { sendCouponAction } from '../../store/slices/cupon-slice/cupon-slice';
+
 function BasketPromo(): JSX.Element {
+  // const dispatch = useAppDispatch();
+  // const coupon = useAppSelector((state) => state.coupon.discount);
+
+  // const handleSendCoupon = async () => {
+  //   try {
+  //     await dispatch(sendCouponAction(''));
+  //   } catch (err) {
+  //     return err;
+  //   }
+  // };
+
   return (
     <div className="basket__promo">
       <p className="title title--h4">Если у вас есть промокод на скидку, примените его в этом поле</p>

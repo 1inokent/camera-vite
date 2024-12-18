@@ -10,6 +10,7 @@ enum ApiRout {
   Similar = '/similar',
   Promo = '/promo',
   Orders = '/orders',
+  Coupons = '/coupons'
 }
 
 const PageNames = {

@@ -1,10 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Camera } from '../../../types/cameras-types/cameras-types';
 import { clearError, setError } from '../error-slice/error-slice';
 import { BasketItems } from '../../../types/basket-types/basket-types';
-import { AxiosInstance, AxiosError } from 'axios';
-import { ApiRout } from '../../../const';
-import { OrdersCamera } from '../../../types/send-data-types/orders-type';
 
 export interface BasketState {
   basketItems: BasketItems;
@@ -113,33 +110,6 @@ const basketSlice = createSlice({
     },
   },
 });
-
-export const sendOrderAction = createAsyncThunk<
-  void,
-  OrdersCamera,
-  { extra: AxiosInstance; rejectValue: string }
->(
-  'order/sendOrder',
-  async (
-    { camerasIds, coupon = null },
-    { extra: api, dispatch, rejectWithValue }
-  ) => {
-    dispatch(clearError());
-    try {
-      await api.post(ApiRout.Orders, {
-        camerasIds,
-        coupon,
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const errorMessage = error.message || 'Не удалось отправить заказ';
-        dispatch(setError(errorMessage));
-        return rejectWithValue(errorMessage);
-      }
-      return rejectWithValue('Произошла неизвестная ошибка');
-    }
-  }
-);
 
 export const {
   setBasketSendLoader,

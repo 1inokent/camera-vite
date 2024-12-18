@@ -1,8 +1,15 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { clearBasket, sendOrderAction, setBasketSendLoader, } from '../../store/slices/basket-slice/basket-slice';
+import { clearBasket, setBasketSendLoader, } from '../../store/slices/basket-slice/basket-slice';
 import { clearError, setError } from '../../store/slices/error-slice/error-slice';
+import { resetOrderState, sendOrderAction } from '../../store/slices/order-slice/order-slice';
+
 import { BasketItems } from '../../types/basket-types/basket-types';
-import { calculateTotalPrice, calculateTotalQuantity, calculateDiscountPercentage } from '../../utils/basket-utils';
+import {
+  calculateTotalPrice,
+  calculateTotalQuantity,
+  calculateDiscountPercentage
+} from '../../utils/basket-utils';
 import { formatPrice } from '../../utils/utils';
 
 type BasketSummaryOrderProps = {
@@ -31,8 +38,8 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
         coupon: null,
       };
       await dispatch(sendOrderAction(orderData)).unwrap();
-      orderSuccess();
       dispatch(clearBasket());
+      orderSuccess();
     } catch (err) {
       const errMessage = typeof err === 'string' ? err : 'Ошибка отправки камер';
       dispatch(setError(errMessage));
@@ -40,6 +47,10 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
       dispatch(setBasketSendLoader(false));
     }
   };
+
+  useEffect(() => () => {
+    dispatch(resetOrderState());
+  }, [dispatch]);
 
   return (
     <div className="basket__summary-order">
