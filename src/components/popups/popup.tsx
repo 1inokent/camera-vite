@@ -8,6 +8,8 @@ import AddItemSuccess from './catalog-add-item/add-item-success';
 import BasketRemoveItem from './basket-remove-item/basket-remove-item';
 import ReactDOM from 'react-dom';
 import BasketSendSuccess from './basket-send-success/basket-send-success';
+import { useNavigate } from 'react-router-dom';
+import { AppRoute } from '../../const';
 
 type ContactMePopupProps = {
   camera?: Camera;
@@ -18,6 +20,7 @@ type ContactMePopupProps = {
 }
 
 function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: ContactMePopupProps):JSX.Element {
+  const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
   const basketItems = useAppSelector((state) => state.basket.basketItems);
 
@@ -74,6 +77,13 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
     };
   }, [isInBasket, onClose]);
 
+  const handlerContinueShopping = () => {
+    onClose();
+    if (orderSuccess) {
+      navigate(AppRoute.CatalogPage);
+    }
+  };
+
   return ReactDOM.createPortal(
     <div
       className={`modal is-active ${showSuccessPopup && !basketPageFlag ? 'modal--narrow' : ''}`}
@@ -83,7 +93,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
         <div
           className="modal__overlay"
           role="presentation"
-          onClick={onClose}
+          onClick={() => handlerContinueShopping()}
         >
         </div>
         <div className="modal__content">
@@ -110,7 +120,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
           }
           {
             orderSuccess && (
-              <BasketSendSuccess onClose={onClose} />
+              <BasketSendSuccess onContinueShopping={handlerContinueShopping} />
             )
           }
         </div>

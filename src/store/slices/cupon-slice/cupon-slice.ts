@@ -9,14 +9,6 @@ interface CouponState {
   loading: boolean;
 }
 
-interface CouponResponse {
-  discount: number;
-}
-
-interface ErrorResponse {
-  message: string;
-}
-
 const loadCouponFromStorage = (): {
   coupon: string | null;
   discount: number | null;
@@ -58,15 +50,16 @@ export const sendCouponAction = createAsyncThunk<
     }
 
     try {
-      const respons = await api.post<CouponResponse>(ApiRout.Coupons, {
+      const respons = await api.post<number>(ApiRout.Coupons, {
         coupon: cleanedCoupon,
       });
-      return respons.data.discount;
+      return respons.data;
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data) {
-        const responseData = error.response.data as ErrorResponse;
+      if (error instanceof AxiosError && error.response) {
         const errorMessage =
-          responseData.message || 'Не удалось применить промокод';
+          error.response.status === 400
+            ? 'Промокод недействителен.'
+            : 'Не удалось применить промокод.';
         dispatch(setError(errorMessage));
         return rejectWithValue(errorMessage);
       }

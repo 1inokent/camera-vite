@@ -1,16 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import { AppRoute } from '../../../const';
-
 type BasketSendSuccessProps = {
-  onClose: () => void;
+  onContinueShopping: () => void;
 }
 
-function BasketSendSuccess({onClose}: BasketSendSuccessProps): JSX.Element {
-  const navigate = useNavigate();
-
+function BasketSendSuccess({ onContinueShopping }: BasketSendSuccessProps): JSX.Element {
   const handlerContinueShopping = () => {
-    navigate(AppRoute.CatalogPage);
-    onClose();
+    onContinueShopping();
   };
 
   return (
@@ -32,7 +26,7 @@ function BasketSendSuccess({onClose}: BasketSendSuccessProps): JSX.Element {
         className="cross-btn"
         type="button"
         aria-label="Закрыть попап"
-        onClick={onClose}
+        onClick={() => handlerContinueShopping()}
       >
         <svg width="10" height="10" aria-hidden="true">
           <use xlinkHref="#icon-close"></use>

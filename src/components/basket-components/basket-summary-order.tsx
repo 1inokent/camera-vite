@@ -3,14 +3,16 @@ import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { clearBasket, setBasketSendLoader, } from '../../store/slices/basket-slice/basket-slice';
 import { clearError, setError } from '../../store/slices/error-slice/error-slice';
 import { resetOrderState, sendOrderAction } from '../../store/slices/order-slice/order-slice';
+import { clearCoupon } from '../../store/slices/cupon-slice/cupon-slice';
 
 import { BasketItems } from '../../types/basket-types/basket-types';
+
+import { formatPrice } from '../../utils/utils';
 import {
   calculateTotalPrice,
   calculateTotalQuantity,
   calculateDiscountPercentage
 } from '../../utils/basket-utils';
-import { formatPrice } from '../../utils/utils';
 
 type BasketSummaryOrderProps = {
   basketItems: BasketItems;
@@ -20,14 +22,16 @@ type BasketSummaryOrderProps = {
 
 function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummaryOrderProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const errorMessage = useAppSelector((state) => state.error.message);
+  const couponDiscount = useAppSelector((state) => state.coupon.discount);
 
   const totalPrice = calculateTotalPrice(basketItems);
   const totalQuantity = calculateTotalQuantity(basketItems);
   const discountPercentage = calculateDiscountPercentage(totalQuantity, totalPrice);
   const discountAmount = (totalPrice * discountPercentage) / 100;
-  const finalPrice = totalPrice - discountAmount;
 
+  const promoDiscountAmount = couponDiscount ? (totalPrice * couponDiscount) / 100 : 0;
+  const finalDiscountAmount = discountAmount + promoDiscountAmount;
+  const finalPrice = totalPrice - finalDiscountAmount;
   const handleOrder = async () => {
     dispatch(setBasketSendLoader(true));
     dispatch(clearError());
@@ -40,6 +44,7 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
       await dispatch(sendOrderAction(orderData)).unwrap();
       dispatch(clearBasket());
       orderSuccess();
+      dispatch(clearCoupon());
     } catch (err) {
       const errMessage = typeof err === 'string' ? err : 'Ошибка отправки камер';
       dispatch(setError(errMessage));
@@ -63,10 +68,10 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
         <span
           className={
             `basket__summary-value
-            ${discountAmount > 0 ? 'basket__summary-value--bonus' : ''}`
+            ${discountAmount > 0 || couponDiscount ? 'basket__summary-value--bonus' : ''}`
           }
         >
-          {formatPrice(discountAmount)} ₽
+          {formatPrice(finalDiscountAmount)} ₽
         </span>
       </p>
       <p className="basket__summary-item">
@@ -91,7 +96,6 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
         {loading ? 'Отправка...' : 'Оформить заказ'}
       </button>
 
-      {errorMessage && <h3>{errorMessage}</h3>}
     </div>
   );
 }

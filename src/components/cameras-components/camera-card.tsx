@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
-
 import Rating from '../rating/rating';
 import Popup from '../popups/popup';
 

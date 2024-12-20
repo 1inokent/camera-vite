@@ -18,7 +18,8 @@ import Popup from '../../components/popups/popup';
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const errorMessage = useAppSelector((state) => state.error.message);
-  const loading = useAppSelector((state) => state.basket.loading);
+  const basketLoading = useAppSelector((state) => state.basket.loading);
+  const promoLoading = useAppSelector((state) => state.coupon.loading);
   const { basketItems } = useAppSelector((state) => state.basket);
 
   const [openPopupId, setOpenPopupId] = useState<number | null>(null);
@@ -74,7 +75,7 @@ function BasketPage(): JSX.Element {
     );
   }
 
-  if (loading) {
+  if (basketLoading || promoLoading) {
     return <SpinnerLoader />;
   }
 
@@ -125,7 +126,7 @@ function BasketPage(): JSX.Element {
                 <BasketSummaryOrder
                   basketItems={basketItems}
                   orderSuccess={handleOrderSuccess}
-                  loading={loading}
+                  loading={basketLoading}
                 />
               </div>
             </div>
