@@ -48,7 +48,11 @@ function ProductSimilarSliderList({camerasSimilar}: ProductSimilarListProps): JS
           camerasSimilar.map((camera, index) => (
             <div
               key={camera.id}
-              className={styles.productSimilar__card}
+              className={`${styles.productSimilar__card} ${
+                activeIndex * ITEMS_PER_PAGE <= index &&
+                index < (activeIndex + 1) * ITEMS_PER_PAGE
+                  ? styles.active
+                  : styles.hidden}`}
             >
               <CameraCard camera={camera} key={camera.id} isActive={getActiveClass(index)} />
             </div>

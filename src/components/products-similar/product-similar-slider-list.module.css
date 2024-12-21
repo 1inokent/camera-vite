@@ -14,4 +14,14 @@
   flex: 0 0 calc(33.333% - 32px);
   margin: 0 16px;
   box-sizing: border-box;
+  /* opacity: 0; */
+  transition: opacity 0.8s ease-in-out;
+}
+
+.productSimilar__card.active {
+  opacity: 1;
+}
+
+.productSimilar__card.hidden {
+  opacity: 0;
 }
