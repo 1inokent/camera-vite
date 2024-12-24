@@ -39,6 +39,14 @@ const CameraLevels = {
 
 const ITEMS_PER_PAGE = 9;
 
+const RatingLabels = {
+  Excellent: 'Отлично',
+  Good: 'Хорошо',
+  Normal: 'Нормально',
+  Poor: 'Плохо',
+  Terrible: 'Ужасно',
+} as const;
+
 export {
   AppRoute,
   ApiRout,
@@ -47,4 +55,5 @@ export {
   CameraCategories,
   CameraLevels,
   ITEMS_PER_PAGE,
+  RatingLabels
 };

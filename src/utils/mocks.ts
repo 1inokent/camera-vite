@@ -1,4 +1,4 @@
-import { CameraReview } from '../types/camera-review-types/camera-review-types';
+import { CameraFetchReview } from '../types/camera-review-types/camera-review-types';
 import { CamerasPromo } from '../types/cameras-promo-types/cameras-promo-types';
 import { Camera, Cameras } from '../types/cameras-types/cameras-types';
 import { Filters } from '../types/filters-types/filter-types';
@@ -20,7 +20,7 @@ const mockCamera: Camera = {
   reviewCount: 12,
 };
 
-const mockCameraReviews: CameraReview = {
+const mockCameraReviews: CameraFetchReview = {
   id: 'f1d10ddd-2a21-4f71-9e1e-5f511703fbdd',
   createAt: '2022-07-09T13:24:57.980Z',
   cameraId: 1,

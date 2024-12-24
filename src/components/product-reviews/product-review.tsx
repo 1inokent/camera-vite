@@ -1,9 +1,9 @@
-import { CameraReview } from '../../types/camera-review-types/camera-review-types';
+import { CameraFetchReview } from '../../types/camera-review-types/camera-review-types';
 import { formatDate } from '../../utils/utils';
 import Rating from '../rating/rating';
 
 type ProductReviewProps = {
-  review: CameraReview;
+  review: CameraFetchReview;
 }
 
 

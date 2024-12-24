@@ -1,30 +1,36 @@
 import { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { Camera } from '../../types/cameras-types/cameras-types';
-import AddItemPopup from './catalog-add-item/catalog-add-item';
 import { useAppSelector } from '../../store/hook';
-import { isCameraInArray } from '../../utils/utils';
+
+import AddItemPopup from './catalog-add-item/catalog-add-item';
 import AddItemSuccess from './catalog-add-item/add-item-success';
 import BasketRemoveItem from './basket-remove-item/basket-remove-item';
-import ReactDOM from 'react-dom';
 import BasketSendSuccess from './basket-send-success/basket-send-success';
-import { useNavigate } from 'react-router-dom';
+import FormReview from './form-review/form-review';
+
+import { Camera } from '../../types/cameras-types/cameras-types';
+import { isCameraInArray } from '../../utils/utils';
 import { AppRoute } from '../../const';
+import FormReviewSuccess from './form-review/form-review-success';
 
 type ContactMePopupProps = {
   camera?: Camera;
   basketPageFlag?: boolean;
   orderSuccess?: boolean;
+  addReview?: boolean;
   onClose: () => void;
   removeItem?: () => void;
 }
 
-function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: ContactMePopupProps):JSX.Element {
+function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess, addReview}: ContactMePopupProps):JSX.Element {
   const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
   const basketItems = useAppSelector((state) => state.basket.basketItems);
 
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showReviewSuccess, setShowReviewSuccess] = useState(false);
   const isInBasket = camera ? isCameraInArray(camera.id, basketItems) : false;
 
   useEffect(() => {
@@ -45,7 +51,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
 
   useEffect(() => {
     const focusableElements = modalRef.current?.querySelectorAll<HTMLElement>(
-      'button, input, [href], [tabindex]:not([tabindex="-1"])'
+      'button, input, [href], [tabindex]:not([tabindex="-1"]), textarea'
     );
     const firstElement = focusableElements?.[0];
     const lastElement = focusableElements?.[focusableElements.length - 1];
@@ -75,7 +81,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
     return () => {
       window.removeEventListener('keydown', handleTabKey);
     };
-  }, [isInBasket, onClose]);
+  }, [addReview, showReviewSuccess, showSuccessPopup, orderSuccess]);
 
   const handlerContinueShopping = () => {
     onClose();
@@ -84,12 +90,16 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
     }
   };
 
+  const handleShowReviewSuccess = () => {
+    setShowReviewSuccess(!showReviewSuccess);
+  };
+
   return ReactDOM.createPortal(
     <div
-      className={`modal is-active ${showSuccessPopup && !basketPageFlag ? 'modal--narrow' : ''}`}
+      className={`modal is-active ${showSuccessPopup && !basketPageFlag || showReviewSuccess || orderSuccess ? 'modal--narrow' : ''}`}
       ref={modalRef}
     >
-      <div className="modal__wrapper" role='popupName'>
+      <div className="modal__wrapper" role="dialog" aria-modal="true">
         <div
           className="modal__overlay"
           role="presentation"
@@ -121,6 +131,16 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess}: Cont
           {
             orderSuccess && (
               <BasketSendSuccess onContinueShopping={handlerContinueShopping} />
+            )
+          }
+          {
+            addReview && !showReviewSuccess && (
+              <FormReview onClose={onClose} onShowReviewSucces={handleShowReviewSuccess} />
+            )
+          }
+          {
+            showReviewSuccess && (
+              <FormReviewSuccess onClose={onClose} />
             )
           }
         </div>

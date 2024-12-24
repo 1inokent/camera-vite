@@ -1,8 +1,8 @@
-import { CameraReviews } from '../../types/camera-review-types/camera-review-types';
+import { CameraFetchReviews } from '../../types/camera-review-types/camera-review-types';
 import ProductReview from './product-review';
 
 type ProductReviewsListProps = {
-  reviews: CameraReviews;
+  reviews: CameraFetchReviews;
 }
 
 
