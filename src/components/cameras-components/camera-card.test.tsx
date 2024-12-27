@@ -34,7 +34,7 @@ describe('CameraCard Component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Купить/i }));
 
-    expect(screen.getByRole('popupName')).toBeInTheDocument();
+    expect(screen.getByRole('name')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Закрыть/i }));
   });

@@ -25,39 +25,39 @@ function BasketPage(): JSX.Element {
   const [openPopupId, setOpenPopupId] = useState<number | null>(null);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
-  const handleOrderSuccess = () => {
+  const handlerOrderSuccess = () => {
     setOrderSuccess(true);
   };
 
-  const handleDecreaseQuantity = (id: number, quantity: number) => {
+  const handlerDecreaseQuantity = (id: number, quantity: number) => {
     if (quantity > 1) {
       dispatch(updateQuantity({id, quantity: quantity - 1}));
     }
   };
 
-  const handleIncreaseQuantity = (id: number, quantity: number) => {
+  const handlerIncreaseQuantity = (id: number, quantity: number) => {
     if (quantity < 9) {
       dispatch(updateQuantity({id, quantity: quantity + 1}));
     }
   };
 
-  const handleInputChange = (id: number, value: string) => {
+  const handlerInputChange = (id: number, value: string) => {
     const parsedValue = parseInt(value, 10);
     if (!isNaN(parsedValue) && parsedValue >= 1 && parsedValue <= 9) {
       dispatch(updateQuantity({ id, quantity: parsedValue }));
     }
   };
 
-  const handleClearBasket = (id: number) => {
+  const handlerClearBasket = (id: number) => {
     dispatch(clearBasket(id));
     setOpenPopupId(null);
   };
 
-  const handleOpenPopup = (id: number) => {
+  const handlerOpenPopup = (id: number) => {
     setOpenPopupId(id);
   };
 
-  const handleClosePopup = () => {
+  const handlerClosePopup = () => {
     setOpenPopupId(null);
   };
 
@@ -107,12 +107,12 @@ function BasketPage(): JSX.Element {
                           <BasketCard
                             key={basketItem.id}
                             basketItem={basketItem}
-                            onClearBasket={handleClearBasket}
-                            onDecreaseQuantity={handleDecreaseQuantity}
-                            onIncreaseQuantity={handleIncreaseQuantity}
-                            onInputChange={handleInputChange}
-                            onOpen={() => handleOpenPopup(basketItem.id)}
-                            onClose={handleClosePopup}
+                            onClearBasket={handlerClearBasket}
+                            onDecreaseQuantity={handlerDecreaseQuantity}
+                            onIncreaseQuantity={handlerIncreaseQuantity}
+                            onInputChange={handlerInputChange}
+                            onOpen={() => handlerOpenPopup(basketItem.id)}
+                            onClose={handlerClosePopup}
                             isPopupOpen={openPopupId === basketItem.id}
                           />
                         )
@@ -125,7 +125,7 @@ function BasketPage(): JSX.Element {
                 <BasketPromo />
                 <BasketSummaryOrder
                   basketItems={basketItems}
-                  orderSuccess={handleOrderSuccess}
+                  orderSuccess={handlerOrderSuccess}
                   loading={basketLoading}
                 />
               </div>

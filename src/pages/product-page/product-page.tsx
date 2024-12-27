@@ -30,7 +30,7 @@ function ProductPage(): JSX.Element {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleAddToBasket = () => {
+  const handlerAddToBasket = () => {
     if (camera) {
       setIsOpen(true);
     }
@@ -138,12 +138,13 @@ function ProductPage(): JSX.Element {
                   <button
                     className="btn btn--purple"
                     type="button"
-                    onClick={handleAddToBasket}
+                    onClick={handlerAddToBasket}
                     disabled={isAddToBasketDisabled}
                   >
                     <svg width="24" height="16" aria-hidden="true">
                       <use xlinkHref="#icon-add-basket"></use>
-                    </svg>Добавить в корзину
+                    </svg>
+                    Добавить в корзину
                   </button>
 
                   <ProductTabs

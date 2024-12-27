@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Camera } from '../../../types/cameras-types/cameras-types';
-import { AppRoute } from '../../../const';
 import { BasketItems } from '../../../types/basket-types/basket-types';
+import { AppRoute } from '../../../const';
 
 type BasketRemoveItemProps = {
   camera: Camera;

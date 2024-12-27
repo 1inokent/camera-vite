@@ -84,7 +84,7 @@ function CatalogPage(): JSX.Element {
     setSearchParams(searchParams);
   };
 
-  const handleFilterChange = (newFilters: Filters) => {
+  const handlerFilterChange = (newFilters: Filters) => {
     Object.entries(newFilters).forEach(([key, value]: [string, string | number | Array<number | string> | undefined | null]) => {
       if(!value){
         searchParams.delete(key);
@@ -110,17 +110,17 @@ function CatalogPage(): JSX.Element {
     setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
-  const handleSortTypeChange = (type: 'price' | 'rating') => {
+  const handlerSortTypeChange = (type: 'price' | 'rating') => {
     updateQueryParams('sortType', type);
     setSortType(type);
   };
 
-  const handleSortOrderChange = (order: 'asc' | 'desc') => {
+  const handlerSortOrderChange = (order: 'asc' | 'desc') => {
     updateQueryParams('sortOrder', order);
     setSortOrder(order);
   };
 
-  const handlePageChange = (page: number) => {
+  const handlerPageChange = (page: number) => {
     updateQueryParams('page', page);
     setCurrentPage(page);
 
@@ -193,7 +193,7 @@ function CatalogPage(): JSX.Element {
                     maxPrice={currentMaxPrice}
                     minPrice={currentMinPrice}
                     filters={initialFilters}
-                    onFilterChange={handleFilterChange}
+                    onFilterChange={handlerFilterChange}
                   />
                 </div>
 
@@ -201,8 +201,8 @@ function CatalogPage(): JSX.Element {
                   <CatalogSort
                     sortType={sortType}
                     sortOrder={sortOrder}
-                    onSortTypeChange={(type) => handleSortTypeChange(type)}
-                    onSortOrderChange={(order) => handleSortOrderChange(order)}
+                    onSortTypeChange={(type) => handlerSortTypeChange(type)}
+                    onSortOrderChange={(order) => handlerSortOrderChange(order)}
                   />
                   {paginatedCameras.length === 0 ? (
                     <h3>Нет товаров по такой цене</h3>
@@ -212,7 +212,7 @@ function CatalogPage(): JSX.Element {
                   <PaginationCatalog
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onPageChange={(page) => handlePageChange(page)}
+                    onPageChange={(page) => handlerPageChange(page)}
                   />
                 </div>
 

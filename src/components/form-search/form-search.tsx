@@ -66,7 +66,6 @@ function FormSearch(): JSX.Element {
     }
   };
 
-
   const handleProductSelect = (productId: number) => {
     const path = generatePath(AppRoute.ProductPage, { id: productId.toString() });
     navigate(path);

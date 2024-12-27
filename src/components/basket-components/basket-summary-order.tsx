@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { clearBasket, setBasketSendLoader, } from '../../store/slices/basket-slice/basket-slice';
 import { clearError, setError } from '../../store/slices/error-slice/error-slice';
@@ -32,7 +33,8 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
   const promoDiscountAmount = couponDiscount ? (totalPrice * couponDiscount) / 100 : 0;
   const finalDiscountAmount = discountAmount + promoDiscountAmount;
   const finalPrice = totalPrice - finalDiscountAmount;
-  const handleOrder = async () => {
+
+  const handlerOrder = async () => {
     dispatch(setBasketSendLoader(true));
     dispatch(clearError());
 
@@ -90,7 +92,7 @@ function BasketSummaryOrder({ basketItems, orderSuccess, loading }: BasketSummar
         type="submit"
         disabled={basketItems.length === 0}
         onClick={() => {
-          void handleOrder();
+          void handlerOrder();
         }}
       >
         {loading ? 'Отправка...' : 'Оформить заказ'}

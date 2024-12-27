@@ -28,7 +28,7 @@ function AddItemPopup({camera, onClose, onSuccess}: AddItemPopupProps): JSX.Elem
 
   const correctName = id === 1 ? name : `${category} ${name}`;
 
-  const handleAddToBasket = () => {
+  const handlerAddToBasket = () => {
     dispatch(addToBasket(camera));
     if (onSuccess) {
       onSuccess();
@@ -76,7 +76,7 @@ function AddItemPopup({camera, onClose, onSuccess}: AddItemPopupProps): JSX.Elem
         <button
           className="btn btn--purple modal__btn modal__btn--fit-width"
           type="submit"
-          onClick={handleAddToBasket}
+          onClick={handlerAddToBasket}
         >
           <svg width="24" height="16" aria-hidden="true">
             <use xlinkHref="#icon-add-basket"></use>

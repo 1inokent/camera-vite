@@ -54,8 +54,8 @@ function BasketCard({
   const correctName = id === 1 ? name : `${category} ${name}`;
   const priceSelectedCamera = quantity * price;
 
-  const handleFocus = () => setTempQuantity('');
-  const handleBlur = () => {
+  const handlerFocus = () => setTempQuantity('');
+  const handlerBlur = () => {
     const pasedValue = parseInt(tempQuantity, 10);
     if (!isNaN(pasedValue) && pasedValue >= 1 && pasedValue <= 9) {
       onInputChange(id, tempQuantity);
@@ -63,7 +63,7 @@ function BasketCard({
       setTempQuantity(quantity.toString());
     }
   };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempQuantity(e.target.value);
   };
 
@@ -126,9 +126,9 @@ function BasketCard({
             value={tempQuantity}
             min="1" max="9"
             aria-label="количество товара"
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={handleChange}
+            onFocus={handlerFocus}
+            onBlur={handlerBlur}
+            onChange={handlerChange}
           />
           <button
             className="btn-icon btn-icon--next"

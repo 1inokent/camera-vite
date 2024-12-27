@@ -11,7 +11,6 @@ import ProductReviewsList from './product-reviews-list';
 import ButtonScrollToTop from '../button-scroll-to-top/button-scroll-to-top';
 import Popup from '../popups/popup';
 
-
 const MIN_DISPLAYED_REVIEWS = 0;
 const REVIEWS_INCREMENT = 3;
 const SCROLL_THRESHOLD = 5;

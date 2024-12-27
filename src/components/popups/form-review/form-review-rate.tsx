@@ -1,6 +1,6 @@
 import React from 'react';
-import { RatingLabels } from '../../../const';
 import { UseFormRegister, FieldErrors, RegisterOptions, Path } from 'react-hook-form';
+import { RatingLabels } from '../../../const';
 
 const NON_RATE = 0;
 const MAX_RATE_VALUE = 5;
@@ -20,7 +20,7 @@ function FormReviewRate<T extends { rating: number | null }>({
   errors,
   validationOptions,
 }: FormReviewRateProps<T>): JSX.Element {
-  const handleRatingChange = (rate: number) => {
+  const handlerRatingChange = (rate: number) => {
     onRating(Number(rate));
   };
 
@@ -46,13 +46,12 @@ function FormReviewRate<T extends { rating: number | null }>({
                       {...register('rating'as Path<T>, validationOptions)}
                       type="radio"
                       value={starValue}
-                      // onClick={() => handleRatingChange(starValue)}
                     />
                     <label
                       className="rate__label"
                       htmlFor={`star-${starValue}`}
                       title={value}
-                      onClick={() => handleRatingChange(starValue)}
+                      onClick={() => handlerRatingChange(starValue)}
                     >
                     </label>
                   </React.Fragment>

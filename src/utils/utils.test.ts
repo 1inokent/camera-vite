@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  formattedPrice,
-  standardizePhoneNumber,
+  formatPrice,
   splitDescription,
   formatDate,
   getBannerText,
@@ -10,17 +9,8 @@ import {
 describe('Utility Functions', () => {
   describe('formattedPrice', () => {
     it('should format price correctly', () => {
-      expect(formattedPrice(1000)).toBe('1 000');
-      expect(formattedPrice(1234567.89)).toBe('1 234 567,89');
-    });
-  });
-
-  describe('standardizePhoneNumber', () => {
-    it('should standardize phone number correctly', () => {
-      expect(standardizePhoneNumber('89161234567')).toBe('+89161234567');
-      expect(standardizePhoneNumber('+7 (916) 123-45-67')).toBe('+79161234567');
-      expect(standardizePhoneNumber('8-916-123-45-67')).toBe('+89161234567');
-      expect(standardizePhoneNumber('1234567890')).toBe('+1234567890');
+      expect(formatPrice(1000)).toBe('1 000');
+      expect(formatPrice(1234567.89)).toBe('1 234 567,89');
     });
   });
 

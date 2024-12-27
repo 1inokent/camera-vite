@@ -90,7 +90,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess, addRe
     }
   };
 
-  const handleShowReviewSuccess = () => {
+  const handlerShowReviewSuccess = () => {
     setShowReviewSuccess(!showReviewSuccess);
   };
 
@@ -135,7 +135,7 @@ function Popup({camera, onClose, removeItem, basketPageFlag, orderSuccess, addRe
           }
           {
             addReview && !showReviewSuccess && (
-              <FormReview onClose={onClose} onShowReviewSucces={handleShowReviewSuccess} />
+              <FormReview onClose={onClose} onShowReviewSucces={handlerShowReviewSuccess} />
             )
           }
           {

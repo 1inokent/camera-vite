@@ -6,7 +6,6 @@ type ProductReviewProps = {
   review: CameraFetchReview;
 }
 
-
 function ProductReview({review}: ProductReviewProps):JSX.Element {
   const {userName, createAt, rating, advantage, disadvantage, review: comment} = review;
 
@@ -17,7 +16,7 @@ function ProductReview({review}: ProductReviewProps):JSX.Element {
         <time className="review-card__data" dateTime="2022-04-13">{formatDate(createAt)}</time>
       </div>
 
-      <Rating rating={rating} />
+      <Rating rating={rating ?? 0} />
 
       <ul className="review-card__list">
         <li className="item-list"><span className="item-list__title">Достоинства:</span>

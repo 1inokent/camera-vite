@@ -9,7 +9,6 @@ function PaginationCatalog({currentPage, totalPages, onPageChange}: PaginationCa
     return null;
   }
 
-
   const maxPagesToShow = 3;
   const currentBlock = Math.ceil(currentPage / maxPagesToShow);
   const startPage = (currentBlock - 1) * maxPagesToShow + 1;

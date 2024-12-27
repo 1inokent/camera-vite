@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { sendCouponAction } from '../../store/slices/cupon-slice/cupon-slice';
 import { clearError } from '../../store/slices/error-slice/error-slice';
@@ -17,11 +18,11 @@ function BasketPromo(): JSX.Element {
     'is-valid': discount !== null && !errorMessage,
   });
 
-  const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const handlerInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setPromoCode(evt.target.value);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handlerSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(clearError());
 
@@ -40,7 +41,7 @@ function BasketPromo(): JSX.Element {
         <form
           action="#"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleSubmit}
+          onSubmit={handlerSubmit}
         >
           <div className={inputClassName}>
             <label><span className="custom-input__label">Промокод</span>
@@ -48,7 +49,7 @@ function BasketPromo(): JSX.Element {
                 type="text"
                 name="promo"
                 placeholder="Введите промокод"
-                onChange={handleInputChange}
+                onChange={handlerInputChange}
                 disabled={loading}
               />
             </label>
@@ -60,7 +61,7 @@ function BasketPromo(): JSX.Element {
           <button
             className="btn"
             type="submit"
-            disabled={loading}
+            disabled={promoCode.trim() === ''}
           >
             {loading ? 'Применяем...' : 'Применить'}
           </button>

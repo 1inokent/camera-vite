@@ -39,7 +39,7 @@ function FormReview({ onShowReviewSucces, onClose }: FormReviewProps): JSX.Eleme
     mode: 'onChange'
   });
   const rating = watch('rating');
-  const handleRatingChange = (newRating: number) => {
+  const handlerRatingChange = (newRating: number) => {
     setValue('rating', newRating, { shouldValidate: true });
   };
 
@@ -79,7 +79,7 @@ function FormReview({ onShowReviewSucces, onClose }: FormReviewProps): JSX.Eleme
             })}
             >
               <FormReviewRate<CameraReviewSubmit>
-                onRating={handleRatingChange}
+                onRating={handlerRatingChange}
                 rating={rating}
                 register={register}
                 errors={errors}

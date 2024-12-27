@@ -4,7 +4,7 @@ import { scrollToTop } from '../../utils/utils';
 import { vi } from 'vitest';
 
 vi.mock('../../utils/utils', () => ({
-  smoothScrollToTop: vi.fn(),
+  scrollToTop: vi.fn(),
 }));
 
 describe('ButtonScrollToTop', () => {
