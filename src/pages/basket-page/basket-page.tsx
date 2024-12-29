@@ -17,7 +17,6 @@ import Popup from '../../components/popups/popup';
 
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
-  const errorMessage = useAppSelector((state) => state.error.message);
   const basketLoading = useAppSelector((state) => state.basket.loading);
   const promoLoading = useAppSelector((state) => state.coupon.loading);
   const { basketItems } = useAppSelector((state) => state.basket);
@@ -60,20 +59,6 @@ function BasketPage(): JSX.Element {
   const handlerClosePopup = () => {
     setOpenPopupId(null);
   };
-
-
-  if (errorMessage && basketItems.length === 0) {
-    return (
-      <>
-        <h2>{errorMessage}</h2>
-        <Link to={AppRoute.CatalogPage}>
-          <p style={{ color: 'blue', textDecoration: 'underline'}}>
-            Вернуться на главную
-          </p>
-        </Link>
-      </>
-    );
-  }
 
   if (basketLoading || promoLoading) {
     return <SpinnerLoader />;
