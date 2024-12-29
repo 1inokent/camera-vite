@@ -1,12 +1,14 @@
-export type CameraReview = {
+export type CameraFetchReview = {
   id: string;
   createAt: string;
-  cameraId: number;
+  cameraId: number | null;
   userName: string;
   advantage: string;
   disadvantage: string;
   review: string;
-  rating: number;
+  rating: number | null;
 };
 
-export type CameraReviews = CameraReview[];
+export type CameraReviewSubmit = Omit<CameraFetchReview, 'createAt' | 'id'>;
+
+export type CameraFetchReviews = CameraFetchReview[];

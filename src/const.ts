@@ -1,6 +1,7 @@
 enum AppRoute {
   CatalogPage = '/',
   ProductPage = '/cameras/:id',
+  BasketPage = '/card',
 }
 
 enum ApiRout {
@@ -9,10 +10,17 @@ enum ApiRout {
   Similar = '/similar',
   Promo = '/promo',
   Orders = '/orders',
+  Coupons = '/coupons'
 }
 
+const PageNames = {
+  Home: { name: 'Главная', key: 'home' },
+  Catalog: { name: 'Каталог', key: 'catalog' },
+  Basket: 'Корзина',
+} as const;
+
 const CameraTypes = {
-  CTypesCamerasollectible: 'Коллекционная',
+  Сollectible: 'Коллекционная',
   Instant: 'Моментальная',
   Digital: 'Цифровая',
   Film: 'Плёночная',
@@ -23,23 +31,29 @@ const CameraCategories = {
   PhotoCamera: 'Фотоаппарат',
 } as const;
 
-const CameraLevel = {
+const CameraLevels = {
   Zero: 'Нулевой',
   Amateur: 'Любительский',
   Professional: 'Профессиональный',
 } as const;
 
-const PHONE_REGULAR_EXPRESSION =
-  /^(\+7|8)\s*\(?9\d{2}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
-
 const ITEMS_PER_PAGE = 9;
+
+const RatingLabels = {
+  Excellent: 'Отлично',
+  Good: 'Хорошо',
+  Normal: 'Нормально',
+  Poor: 'Плохо',
+  Terrible: 'Ужасно',
+} as const;
 
 export {
   AppRoute,
   ApiRout,
+  PageNames,
   CameraTypes,
   CameraCategories,
-  CameraLevel,
-  PHONE_REGULAR_EXPRESSION,
-  ITEMS_PER_PAGE
+  CameraLevels,
+  ITEMS_PER_PAGE,
+  RatingLabels
 };

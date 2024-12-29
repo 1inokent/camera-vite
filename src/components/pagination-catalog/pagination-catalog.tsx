@@ -9,11 +9,12 @@ function PaginationCatalog({currentPage, totalPages, onPageChange}: PaginationCa
     return null;
   }
 
-  const pages = [];
   const maxPagesToShow = 3;
-  const startPage = Math.max(currentPage - 1, 1);
+  const currentBlock = Math.ceil(currentPage / maxPagesToShow);
+  const startPage = (currentBlock - 1) * maxPagesToShow + 1;
   const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
 
+  const pages = [];
   for (let i = startPage; i <= endPage; i++) {
     pages.push(i);
   }
@@ -26,7 +27,7 @@ function PaginationCatalog({currentPage, totalPages, onPageChange}: PaginationCa
             <li className="pagination__item">
               <a
                 className="pagination__link pagination__link--text"
-                onClick={() => onPageChange(currentPage - 1)}
+                onClick={() => onPageChange(startPage - 1)}
               >
             Назад
               </a>
@@ -53,7 +54,7 @@ function PaginationCatalog({currentPage, totalPages, onPageChange}: PaginationCa
             <li className='pagination__item'>
               <a
                 className='pagination__link pagination__link--text'
-                onClick={() => onPageChange(currentPage + 1)}
+                onClick={() => onPageChange(endPage + 1)}
               >
                   Далее
               </a>

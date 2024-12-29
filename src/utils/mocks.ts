@@ -1,4 +1,5 @@
-import { CameraReview } from '../types/camera-review-types/camera-review-types';
+import { BasketItems } from '../types/basket-types/basket-types';
+import { CameraFetchReview, CameraReviewSubmit } from '../types/camera-review-types/camera-review-types';
 import { CamerasPromo } from '../types/cameras-promo-types/cameras-promo-types';
 import { Camera, Cameras } from '../types/cameras-types/cameras-types';
 import { Filters } from '../types/filters-types/filter-types';
@@ -20,7 +21,7 @@ const mockCamera: Camera = {
   reviewCount: 12,
 };
 
-const mockCameraReviews: CameraReview = {
+const mockCameraReviews: CameraFetchReview = {
   id: 'f1d10ddd-2a21-4f71-9e1e-5f511703fbdd',
   createAt: '2022-07-09T13:24:57.980Z',
   cameraId: 1,
@@ -149,6 +150,52 @@ const mockFilters: Filters = {
   level: [],
 };
 
+const mockCameraReviewSubmit: CameraReviewSubmit = {
+  cameraId: 4,
+  userName: 'Test Camera',
+  advantage: 'random text from advantage test',
+  disadvantage: 'random text from disadvantage test',
+  review: 'random text from review test',
+  rating: 4
+};
+
+const mockBasketCameras: BasketItems = [
+  {
+    quantity: 2,
+    id: 4,
+    name: 'Test Camera 1',
+    vendorCode: '12345',
+    type: 'Коллекционная',
+    category: 'Видеокамера',
+    description: 'This is a high-end DSLR camera. It comes with a variety of features and accessories.',
+    level: 'Нулевой',
+    price: 20000,
+    rating: 4,
+    reviewCount: 12,
+    previewImg: 'img/content/das-auge.jpg',
+    previewImg2x: 'img/content/das-auge@2x.jpg',
+    previewImgWebp: 'img/content/das-auge.webp',
+    previewImgWebp2x: 'img/content/das-auge@2x.webp',
+  },
+  {
+    quantity: 2,
+    id: 4,
+    name: 'Test Camera 12',
+    vendorCode: '123245',
+    type: 'Коллекционная',
+    category: 'Видеокамера',
+    description: 'This is a high-end DSLR camera. It comes with a variety of features and accessories.',
+    level: 'Нулевой',
+    price: 220000,
+    rating: 3,
+    reviewCount: 15,
+    previewImg: 'img/content/das-auge.jpg',
+    previewImg2x: 'img/content/das-auge@2x.jpg',
+    previewImgWebp: 'img/content/das-auge.webp',
+    previewImgWebp2x: 'img/content/das-auge@2x.webp',
+  }
+];
+
 export {
   mockCamera,
   mockCameraReviews,
@@ -157,4 +204,6 @@ export {
   mockCameras,
   mockProduct,
   mockFilters,
+  mockCameraReviewSubmit,
+  mockBasketCameras
 };

@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { CameraReviews } from '../../../types/camera-review-types/camera-review-types';
+import { CameraFetchReviews, CameraReviewSubmit } from '../../../types/camera-review-types/camera-review-types';
 import { AxiosError, AxiosInstance } from 'axios';
 import { ApiRout } from '../../../const';
 import { clearError, setError } from '../error-slice/error-slice';
 
 export interface CameraReviewState {
-  reviews: CameraReviews;
+  reviews: CameraFetchReviews;
   isLoading: boolean;
 }
 
@@ -15,15 +15,15 @@ const initialState: CameraReviewState = {
 };
 
 export const fetchCameraReviewAction = createAsyncThunk<
-  CameraReviews,
+  CameraFetchReviews,
   { signal: AbortSignal; id: string },
   { extra: AxiosInstance; rejectValue: string }
 >(
-  'product/fetchCameraReview',
+  'camera/fetchCameraReview',
   async ({ signal, id }, { extra: api, dispatch, rejectWithValue }) => {
     dispatch(clearError());
     try {
-      const { data } = await api.get<CameraReviews>(
+      const { data } = await api.get<CameraFetchReviews>(
         `${ApiRout.Cameras}/${id}${ApiRout.Review}`,
         { signal }
       );
@@ -35,6 +35,27 @@ export const fetchCameraReviewAction = createAsyncThunk<
           return rejectWithValue('Запрос был отменён');
         }
         const errorMessage = error.message || 'Произошла неизвестная ошибка';
+        dispatch(setError(errorMessage));
+        return rejectWithValue(errorMessage);
+      }
+      return rejectWithValue('Произошла неизвестная ошибка');
+    }
+  }
+);
+
+export const submitCameraReviewAction = createAsyncThunk<
+  void,
+  CameraReviewSubmit,
+  { extra: AxiosInstance; rejectValue: string }
+>(
+  'camera/submitCameraReview',
+  async (reviewData, { extra: api, dispatch, rejectWithValue }) => {
+    dispatch(clearError);
+    try {
+      await api.post(ApiRout.Review, reviewData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorMessage = error.message || 'Не удалось отправить отзыв';
         dispatch(setError(errorMessage));
         return rejectWithValue(errorMessage);
       }

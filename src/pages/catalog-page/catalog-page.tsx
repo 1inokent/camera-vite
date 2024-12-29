@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../store/hook';
 
@@ -14,6 +14,7 @@ import PaginationCatalog from '../../components/pagination-catalog/pagination-ca
 
 import { Filters } from '../../types/filters-types/filter-types';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
+
 import { AppRoute, ITEMS_PER_PAGE } from '../../const';
 import { filterCamerasByParams, sortingCameras } from '../../utils/sorting-filtering-utils';
 
@@ -41,6 +42,8 @@ function CatalogPage(): JSX.Element {
   const [currentMinPrice, setCurrentMinPrice] = useState<number>();
   const [currentMaxPrice, setCurrentMaxPrice] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(initialCurrentPage);
+
+  const topRef = useRef<HTMLDivElement>(null);
 
   const partiallyFilteredCameras = useMemo(() => {
     if (cameras) {
@@ -81,7 +84,7 @@ function CatalogPage(): JSX.Element {
     setSearchParams(searchParams);
   };
 
-  const handleFilterChange = (newFilters: Filters) => {
+  const handlerFilterChange = (newFilters: Filters) => {
     Object.entries(newFilters).forEach(([key, value]: [string, string | number | Array<number | string> | undefined | null]) => {
       if(!value){
         searchParams.delete(key);
@@ -107,19 +110,23 @@ function CatalogPage(): JSX.Element {
     setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
-  const handleSortTypeChange = (type: 'price' | 'rating') => {
+  const handlerSortTypeChange = (type: 'price' | 'rating') => {
     updateQueryParams('sortType', type);
     setSortType(type);
   };
 
-  const handleSortOrderChange = (order: 'asc' | 'desc') => {
+  const handlerSortOrderChange = (order: 'asc' | 'desc') => {
     updateQueryParams('sortOrder', order);
     setSortOrder(order);
   };
 
-  const handlePageChange = (page: number) => {
+  const handlerPageChange = (page: number) => {
     updateQueryParams('page', page);
     setCurrentPage(page);
+
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -142,8 +149,8 @@ function CatalogPage(): JSX.Element {
     }
   }, [partiallyFilteredCameras]);
 
-  if (isLoading) {
-    return <SpinnerLoader />;
+  if (isLoading || cameras.length === 0) {
+    return (<SpinnerLoader />);
   }
 
   if (errorMessage && !cameras) {
@@ -170,13 +177,12 @@ function CatalogPage(): JSX.Element {
 
       <main>
         <Banner />
-
         <div className="page-content">
 
           <Breadcrumbs />
 
           <section className="catalog">
-            <div className="container">
+            <div className="container" ref={topRef}>
 
               {errorMessage && <p>{errorMessage}</p>}
 
@@ -187,7 +193,7 @@ function CatalogPage(): JSX.Element {
                     maxPrice={currentMaxPrice}
                     minPrice={currentMinPrice}
                     filters={initialFilters}
-                    onFilterChange={handleFilterChange}
+                    onFilterChange={handlerFilterChange}
                   />
                 </div>
 
@@ -195,14 +201,18 @@ function CatalogPage(): JSX.Element {
                   <CatalogSort
                     sortType={sortType}
                     sortOrder={sortOrder}
-                    onSortTypeChange={(type) => handleSortTypeChange(type)}
-                    onSortOrderChange={(order) => handleSortOrderChange(order)}
+                    onSortTypeChange={(type) => handlerSortTypeChange(type)}
+                    onSortOrderChange={(order) => handlerSortOrderChange(order)}
                   />
-                  <CamerasList cameras={paginatedCameras} />
+                  {paginatedCameras.length === 0 ? (
+                    <h3>Нет товаров по такой цене</h3>
+                  ) : (
+                    <CamerasList loading={isLoading} cameras={paginatedCameras} />
+                  )}
                   <PaginationCatalog
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onPageChange={(page) => handlePageChange(page)}
+                    onPageChange={(page) => handlerPageChange(page)}
                   />
                 </div>
 

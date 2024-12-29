@@ -66,7 +66,6 @@ function FormSearch(): JSX.Element {
     }
   };
 
-
   const handleProductSelect = (productId: number) => {
     const path = generatePath(AppRoute.ProductPage, { id: productId.toString() });
     navigate(path);
@@ -126,26 +125,25 @@ function FormSearch(): JSX.Element {
   ));
 
   return (
-    <>
-      <div className="form-search">
-        <form onKeyDown={handleKeyDown}>
+    <div className="form-search">
+      <form onKeyDown={handleKeyDown}>
 
-          <label>
-            <svg className="form-search__icon" width="16" height="16" aria-hidden="true">
-              <use xlinkHref="#icon-lens"></use>
-            </svg>
-            <input
-              className="form-search__input"
-              type="text"
-              autoComplete="off"
-              placeholder="Поиск по сайту"
-              value={searchTerm}
-              onChange={handleInputChange}
-            />
-          </label>
+        <label>
+          <svg className="form-search__icon" width="16" height="16" aria-hidden="true">
+            <use xlinkHref="#icon-lens"></use>
+          </svg>
+          <input
+            className="form-search__input"
+            type="text"
+            autoComplete="off"
+            placeholder="Поиск по сайту"
+            value={searchTerm}
+            onChange={handleInputChange}
+          />
+        </label>
 
-          {
-            showDropdown &&
+        {
+          showDropdown &&
               <ul
                 className="form-search__select-list"
                 style={{
@@ -156,11 +154,11 @@ function FormSearch(): JSX.Element {
               >
                 {renderDropdownItems()}
               </ul>
-          }
+        }
 
-        </form>
-        {
-          searchTerm.length > 0 &&
+      </form>
+      {
+        searchTerm.length > 0 &&
             <button
               className="form-search__reset"
               type="reset"
@@ -172,15 +170,8 @@ function FormSearch(): JSX.Element {
               </svg>
               <span className="visually-hidden">Сбросить поиск</span>
             </button>
-        }
-      </div>
-
-      <a className="header__basket-link" href="#">
-        <svg width="16" height="16" aria-hidden="true">
-          <use xlinkHref="#icon-basket"></use>
-        </svg>
-      </a>
-    </>
+      }
+    </div>
   );
 }
 

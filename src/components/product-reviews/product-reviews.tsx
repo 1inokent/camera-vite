@@ -9,7 +9,7 @@ import { clearError, setError } from '../../store/slices/error-slice/error-slice
 
 import ProductReviewsList from './product-reviews-list';
 import ButtonScrollToTop from '../button-scroll-to-top/button-scroll-to-top';
-
+import Popup from '../popups/popup';
 
 const MIN_DISPLAYED_REVIEWS = 0;
 const REVIEWS_INCREMENT = 3;
@@ -23,9 +23,26 @@ function ProductReviews(): JSX.Element {
   const { id } = useParams<{ id: string }>();
 
   const [displayedReviewsCount, setDisplayedReviewsCount] = useState(REVIEWS_INCREMENT);
+  const [addReview, setAddReview] = useState(false);
 
   const sortedReviews = [...reviews].sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime());
   const displayedReviews = sortedReviews.slice(MIN_DISPLAYED_REVIEWS, displayedReviewsCount);
+
+  const handleAddReview = () => {
+    setAddReview(!addReview);
+  };
+
+  const handleShowMoreReviews = () => {
+    setDisplayedReviewsCount((prevCount) => prevCount + REVIEWS_INCREMENT);
+  };
+
+  const handleScroll = debounce(() => {
+    const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - SCROLL_THRESHOLD;
+
+    if (isAtBottom && displayedReviewsCount < sortedReviews.length) {
+      handleShowMoreReviews();
+    }
+  }, SCROLL_DEBOUNCE_DELAY);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -49,18 +66,6 @@ function ProductReviews(): JSX.Element {
 
   }, [dispatch, id]);
 
-  const handleShowMoreReviews = () => {
-    setDisplayedReviewsCount((prevCount) => prevCount + REVIEWS_INCREMENT);
-  };
-
-  const handleScroll = debounce(() => {
-    const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - SCROLL_THRESHOLD;
-
-    if (isAtBottom && displayedReviewsCount < sortedReviews.length) {
-      handleShowMoreReviews();
-    }
-  }, SCROLL_DEBOUNCE_DELAY);
-
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
 
@@ -79,7 +84,11 @@ function ProductReviews(): JSX.Element {
         <div className="container">
           <div className="page-content__headed">
             <h2 className="title title--h3">Отзывы</h2>
-            <button className="btn visually-hidden" type="button">
+            <button
+              className="btn"
+              type="button"
+              onClick={handleAddReview}
+            >
               Оставить свой отзыв
             </button>
           </div>
@@ -111,6 +120,8 @@ function ProductReviews(): JSX.Element {
           )}
         </div>
       </section>
+
+      {addReview && <Popup onClose={handleAddReview} addReview={addReview} />}
 
       <ButtonScrollToTop />
     </div>

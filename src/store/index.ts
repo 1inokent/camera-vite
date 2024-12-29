@@ -7,6 +7,9 @@ import errorSlice from './slices/error-slice/error-slice';
 import cameraReviewSlice from './slices/camera-review-slice/camera-review-slice';
 import camerasSimilarSlice from './slices/camera-similar-slice/cameras-similar-slice';
 import camerasPromoSlice from './slices/camera-promo-slice/cameras-promo-slice';
+import basketSlice from './slices/basket-slice/basket-slice';
+import orderSlice from './slices/order-slice/order-slice';
+import couponSlice from './slices/cupon-slice/cupon-slice';
 
 const api = createAPI();
 
@@ -18,6 +21,9 @@ const store = configureStore({
     cameraReview: cameraReviewSlice,
     camerasSimilar: camerasSimilarSlice,
     camerasPromo: camerasPromoSlice,
+    basket: basketSlice,
+    order: orderSlice,
+    coupon: couponSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

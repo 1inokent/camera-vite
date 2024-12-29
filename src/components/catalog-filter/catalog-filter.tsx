@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Filters } from '../../types/filters-types/filter-types';
 import { CameraCategory } from '../../types/cameras-types/cameras-types';
+import { CameraCategories, CameraLevels, CameraTypes } from '../../const';
 
 type CatalogFilterProps = {
   onFilterChange: (filters: Filters) => void;
@@ -195,9 +196,9 @@ function CatalogFilter({ onFilterChange, filters, minPrice, maxPrice }: CatalogF
               <input
                 type="radio"
                 name="category"
-                value="Фотоаппарат"
-                onChange={() => handleCategoryChange('Фотоаппарат')}
-                checked={category === 'Фотоаппарат'}
+                value={CameraCategories.PhotoCamera}
+                onChange={() => handleCategoryChange(CameraCategories.PhotoCamera)}
+                checked={category === CameraCategories.PhotoCamera}
               />
               <span className="custom-radio__icon"></span>
               <span className="custom-radio__label">Фотоаппарат</span>
@@ -208,9 +209,9 @@ function CatalogFilter({ onFilterChange, filters, minPrice, maxPrice }: CatalogF
               <input
                 type="radio"
                 name="category"
-                value='Видеокамера'
-                onChange={() => handleCategoryChange('Видеокамера')}
-                checked={category === 'Видеокамера'}
+                value={CameraCategories.VideoCamera}
+                onChange={() => handleCategoryChange(CameraCategories.VideoCamera)}
+                checked={category === CameraCategories.VideoCamera}
               />
               <span className="custom-radio__icon"></span>
               <span className="custom-radio__label">Видеокамера</span>
@@ -220,14 +221,16 @@ function CatalogFilter({ onFilterChange, filters, minPrice, maxPrice }: CatalogF
 
         <fieldset className="catalog-filter__block">
           <legend className="title title--h5">Тип камеры</legend>
-          {['Цифровая', 'Плёночная', 'Моментальная', 'Коллекционная'].map((type) => (
+          {Object.values(CameraTypes).map((type) => (
             <div key={type} className="custom-checkbox catalog-filter__item">
               <label>
                 <input
                   type="checkbox"
                   name={type}
                   checked={cameraType?.includes(type)}
-                  disabled={category === 'Видеокамера' && (type === 'Плёночная' || type === 'Моментальная')}
+                  disabled={
+                    category === CameraCategories.VideoCamera && (type === CameraTypes.Film || type === CameraTypes.Instant)
+                  }
                   onChange={() => handleTypeChange(type)}
                 />
                 <span className="custom-checkbox__icon"></span>
@@ -239,7 +242,7 @@ function CatalogFilter({ onFilterChange, filters, minPrice, maxPrice }: CatalogF
 
         <fieldset className="catalog-filter__block">
           <legend className="title title--h5">Уровень</legend>
-          {['Нулевой', 'Любительский', 'Профессиональный'].map((level) => (
+          {Object.values(CameraLevels).map((level) => (
             <div key={level} className="custom-checkbox catalog-filter__item">
               <label>
                 <input
